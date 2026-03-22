@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 伴侣</title>
+<title>幻境 · AI伴侣</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&display=swap');
 :root{
@@ -15,10 +15,11 @@
   --r:12px;--tr:.22s cubic-bezier(.4,0,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
 
-/* NAV */
-.nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:var(--surf);border-bottom:1px solid var(--bd);flex-shrink:0;}
+/* ── NAV ── */
+.nav{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--surf);border-bottom:1px solid var(--bd);}
 .logo{font-family:'Noto Serif SC',serif;font-size:18px;letter-spacing:2px;color:var(--acc);}
 .tabs{display:flex;gap:2px;background:var(--bg);border-radius:8px;padding:3px;}
 .tab{padding:6px 20px;border-radius:6px;cursor:pointer;font-size:13px;color:var(--tx2);border:none;background:none;transition:var(--tr);font-family:'Noto Sans SC',sans-serif;}
@@ -29,92 +30,110 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);
 .dot.off{background:var(--tx3);box-shadow:none;animation:none;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-/* LAYOUT */
-.main{display:flex;flex:1;overflow:hidden;}
-.page{display:none;width:100%;height:100%;}
-.page.on{display:flex;}
+/* ── LAYOUT ── */
+.main{flex:1;overflow:hidden;display:flex;min-height:0;}
 
-/* CHAR SIDEBAR */
-.csb{width:216px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--bd);display:flex;flex-direction:column;}
-.csb-hd{padding:14px 16px;border-bottom:1px solid var(--bd);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);}
-.clist{flex:1;overflow-y:auto;padding:8px;}
-.clist::-webkit-scrollbar{width:3px;}.clist::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
-.ci{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:var(--r);cursor:pointer;transition:var(--tr);border:1px solid transparent;}
+/* Both pages fill .main, shown/hidden via JS */
+#page-chat{display:flex;width:100%;height:100%;}
+#page-cfg{display:none;width:100%;height:100%;}
+
+/* ── CHAT SIDEBAR ── */
+.csb{width:260px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--bd);display:flex;flex-direction:column;height:100%;}
+.csb-hd{height:56px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);flex-shrink:0;}
+.csb-title{font-size:14px;font-weight:600;color:var(--tx);}
+.clist{flex:1;overflow-y:auto;padding:8px 0;}
+.clist::-webkit-scrollbar{width:3px;}.clist::-webkit-scrollbar-thumb{background:var(--bd);}
+.ci{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;}
 .ci:hover{background:var(--surf2);}
-.ci.on{background:var(--surf2);border-color:var(--bd);}
-.cav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;position:relative;}
-.cav::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:1.5px solid transparent;transition:var(--tr);}
-.ci.on .cav::after{border-color:var(--acc);}
-.cn{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.cd{font-size:10px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.ci.on{background:var(--surf2);border-left-color:var(--acc);}
+.cav{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--surf3);}
+.ci-info{flex:1;min-width:0;}
+.cn{font-size:13px;font-weight:500;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cd{font-size:11px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.ci-time{font-size:10px;color:var(--tx3);flex-shrink:0;}
 
-/* CHAT AREA */
+/* ── CHAT MAIN ── */
 .chat-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-.chat-hd{padding:13px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px;background:var(--surf);flex-shrink:0;}
-.chat-hd-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;}
-.chat-hd-info h3{font-size:14px;font-weight:500;}
-.chat-hd-info p{font-size:11px;color:var(--tx3);margin-top:1px;}
+.chat-hd{height:60px;flex-shrink:0;padding:0 18px;display:flex;align-items:center;gap:12px;background:var(--surf);border-bottom:1px solid var(--bd);}
+.chat-hd-av{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--surf2);}
+.chat-hd-info h3{font-size:15px;font-weight:600;}
+.chat-hd-info p{font-size:11px;color:var(--tx3);margin-top:2px;}
 .chat-hd-act{margin-left:auto;display:flex;gap:6px;}
-.ibtn{width:30px;height:30px;border-radius:8px;background:var(--surf2);border:1px solid var(--bd);color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:var(--tr);}
-.ibtn:hover{color:var(--tx);border-color:var(--acc);}
+.ibtn{width:30px;height:30px;border-radius:8px;border:1px solid var(--bd);background:transparent;color:var(--tx3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:var(--tr);}
+.ibtn:hover{color:var(--tx);border-color:var(--acc);background:var(--surf2);}
 .ibtn.on{border-color:var(--acc2);color:var(--acc2);background:rgba(126,154,200,.1);}
 
-/* MESSAGES */
-.msgs{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:16px;}
-.msgs::-webkit-scrollbar{width:3px;}.msgs::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--tx3);pointer-events:none;}
-.empty-icon{font-size:42px;opacity:.35;}.empty-txt{font-size:13px;}
+/* ── MESSAGES ── */
+.msgs{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:2px;background:var(--bg);}
+.msgs::-webkit-scrollbar{width:4px;}.msgs::-webkit-scrollbar-thumb{background:var(--surf2);}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--tx3);text-align:center;padding:40px;}
+.empty-icon{font-size:48px;opacity:.25;}
+.empty-txt{font-size:13px;line-height:1.8;}
+.empty-cta{font-size:12px;color:var(--acc);opacity:.7;}
 
-.msg{display:flex;gap:10px;max-width:80%;animation:mi .2s ease;}
-@keyframes mi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* Message row */
+.msg{display:flex;align-items:flex-start;gap:10px;max-width:75%;animation:msgIn .15s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .msg.u{align-self:flex-end;flex-direction:row-reverse;}
-.mav{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--surf2);border:1px solid var(--bd);}
-.mbody{display:flex;flex-direction:column;gap:3px;min-width:0;}
-.mname{font-size:10px;color:var(--tx3);padding:0 3px;}
+/* Space between groups */
+.msg.first{margin-top:12px;}
+/* Avatar */
+.mav{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--surf2);border:1.5px solid var(--bd);}
+.msg.grouped .mav{visibility:hidden;}
+/* Body */
+.mbody{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.mname{font-size:10px;color:var(--tx3);padding:0 4px;margin-bottom:2px;}
 .msg.u .mname{text-align:right;}
-.mbub{padding:10px 14px;border-radius:var(--r);font-size:14px;line-height:1.75;border:1px solid var(--bd);background:var(--surf2);color:var(--tx);word-break:break-word;white-space:pre-wrap;}
-.msg.u .mbub{background:linear-gradient(135deg,#2a2318,#1e1a2a);border-color:#3d3520;color:#f0e8d6;}
-.mfoot{display:flex;align-items:center;gap:6px;padding:0 3px;}
-.msg.u .mfoot{justify-content:flex-end;}
+/* Bubble */
+.mbub{display:inline-block;padding:10px 14px;font-size:14px;line-height:1.75;word-break:break-word;white-space:pre-wrap;border-radius:4px 18px 18px 18px;}
+.msg:not(.u) .mbub{background:var(--surf2);color:var(--tx);}
+.msg.u .mbub{background:linear-gradient(135deg,#3a2e1a,#261e32);color:#f5ead6;border-radius:18px 4px 18px 18px;}
+.msg.u .mbody{align-items:flex-end;}
+.msg.u .mfoot{flex-direction:row-reverse;}
+/* Footer */
+.mfoot{display:flex;align-items:center;gap:5px;padding:2px 4px;}
 .mtime{font-size:10px;color:var(--tx3);}
-.mtk{font-size:9px;color:var(--tx3);font-family:'Space Mono',monospace;background:var(--surf2);border:1px solid var(--bd);border-radius:4px;padding:1px 5px;}
+.mtk{font-size:9px;color:var(--tx3);opacity:.6;font-family:'Space Mono',monospace;}
 
-/* IMAGE MESSAGE */
-.msg-img-wrap{margin-top:6px;border-radius:10px;overflow:hidden;border:1px solid var(--bd);max-width:320px;position:relative;}
-.msg-img{display:block;width:100%;border-radius:10px;cursor:pointer;transition:var(--tr);}
+/* Image in message */
+.msg-img-wrap{margin-top:6px;border-radius:10px;overflow:hidden;border:1px solid var(--bd);max-width:300px;}
+.msg-img{display:block;width:100%;cursor:pointer;transition:opacity .2s;}
 .msg-img:hover{opacity:.9;}
-.msg-img-loading{padding:18px 24px;background:var(--surf2);display:flex;align-items:center;gap:10px;font-size:12px;color:var(--tx3);}
-.msg-img-prompt{font-size:10px;color:var(--tx3);padding:4px 8px;background:rgba(0,0,0,.3);border-top:1px solid var(--bd);font-family:'Space Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-/* tool call indicator */
-.tool-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;background:rgba(126,154,200,.1);border:1px solid var(--acc2);color:var(--acc2);margin-bottom:6px;font-family:'Space Mono',monospace;}
-.tool-badge-icon{font-size:12px;}
+.msg-img-prompt{font-size:10px;color:var(--tx3);padding:4px 8px;background:rgba(0,0,0,.3);font-family:'Space Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tool-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;background:rgba(126,154,200,.1);border:1px solid var(--acc2);color:var(--acc2);margin-bottom:5px;font-family:'Space Mono',monospace;}
 
-/* TYPING */
+/* Typing indicator */
 .typing{display:flex;align-items:center;gap:4px;padding:10px 14px;}
 .td{width:5px;height:5px;border-radius:50%;background:var(--tx3);animation:tp 1.2s infinite ease-in-out;}
 .td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
-@keyframes tp{0%,60%,100%{transform:scale(1);opacity:.5}30%{transform:scale(1.3);opacity:1}}
+@keyframes tp{0%,60%,100%{transform:scale(1);opacity:.4}30%{transform:scale(1.3);opacity:1}}
 
-/* INPUT */
-.inp-area{padding:12px 18px;border-top:1px solid var(--bd);background:var(--surf);flex-shrink:0;}
-.inp-row{display:flex;align-items:flex-end;gap:8px;background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:7px 7px 7px 13px;transition:var(--tr);}
+/* ── INPUT ── */
+.inp-area{flex-shrink:0;padding:10px 16px 14px;background:var(--surf);}
+.inp-row{display:flex;align-items:flex-end;gap:8px;background:var(--surf2);border:1.5px solid var(--bd);border-radius:24px;padding:8px 8px 8px 18px;transition:border-color .2s;}
 .inp-row:focus-within{border-color:var(--acc);}
-.tinp{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:'Noto Sans SC',sans-serif;font-size:14px;resize:none;max-height:120px;min-height:22px;line-height:1.6;padding:3px 0;}
+.tinp{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:'Noto Sans SC',sans-serif;font-size:14px;resize:none;max-height:120px;min-height:22px;line-height:1.65;padding:4px 0;}
 .tinp::placeholder{color:var(--tx3);}
-.sbtn{width:32px;height:32px;border-radius:8px;background:var(--acc);border:none;color:#0d0d12;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--tr);flex-shrink:0;}
-.sbtn:hover{background:#d4ba92;transform:scale(1.05);}
-.sbtn:disabled{background:var(--bd);color:var(--tx3);cursor:not-allowed;transform:none;}
-.inp-hint{font-size:10px;color:var(--tx3);margin-top:6px;text-align:center;}
+.sbtn{width:36px;height:36px;border-radius:50%;background:var(--acc);border:none;color:#0d0d12;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:var(--tr);flex-shrink:0;}
+.sbtn:hover{background:#d4ba92;transform:scale(1.06);}
+.sbtn:disabled{background:var(--bd2);color:var(--tx3);cursor:not-allowed;transform:none;opacity:.5;}
+.inp-hint{font-size:10px;color:var(--tx3);margin-top:5px;text-align:center;opacity:.5;}
 
-/* SCENE ADVANCE */
-.adv-wrap{margin-top:8px;}
-.adv-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;background:transparent;border:1px dashed var(--bd2);color:var(--tx3);font-size:12px;font-family:'Noto Sans SC',sans-serif;cursor:pointer;transition:var(--tr);}
-.adv-btn:hover{border-color:var(--acc);color:var(--acc);background:rgba(200,169,126,.07);}
+/* Scene advance */
+.adv-wrap{display:flex;justify-content:flex-start;margin:4px 0 4px 54px;}
+.adv-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 16px;border-radius:20px;background:transparent;border:1px dashed var(--bd2);color:var(--tx3);font-size:11px;font-family:'Noto Sans SC',sans-serif;cursor:pointer;transition:var(--tr);}
+.adv-btn:hover{border-color:var(--acc);color:var(--acc);}
 
-/* DEBUG PANEL */
-.dbg-panel{width:310px;flex-shrink:0;background:var(--surf);border-left:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;transition:width .2s ease;}
+/* TTS */
+.tts-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:1px solid var(--bd2);background:transparent;color:var(--tx3);cursor:pointer;font-size:11px;transition:var(--tr);margin-left:4px;vertical-align:middle;}
+.tts-btn:hover{border-color:var(--acc2);color:var(--acc2);}
+.tts-btn.playing{border-color:var(--acc3);color:var(--acc3);animation:tts-pulse 1.2s infinite;}
+@keyframes tts-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Debug / Memory panels */
+.dbg-panel{width:310px;flex-shrink:0;background:var(--surf);border-left:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;transition:width .2s;}
 .dbg-panel.hide{width:0;border:none;}
-.dbg-hd{padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;flex-shrink:0;}
+.dbg-hd{padding:11px 14px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:center;}
 .dbg-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--acc2);flex:1;}
 .dbg-body{flex:1;overflow-y:auto;}
 .dbg-body::-webkit-scrollbar{width:3px;}.dbg-body::-webkit-scrollbar-thumb{background:var(--bd);}
@@ -128,7 +147,7 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);
 .le{background:#221a30;color:#b07ecc;border:1px solid #443060;}
 .lh{background:#1a1a28;color:#8888cc;border:1px solid #303050;}
 .lu{background:#28221a;color:#ccaa7e;border:1px solid #604030;}
-.lt{background:#1a2820;color:#7ec8b0;border:1px solid #2a6050;}  /* tool */
+.lt{background:#1a2820;color:#7ec8b0;border:1px solid #2a6050;}
 .dtk{font-size:9px;color:var(--tx3);font-family:'Space Mono',monospace;margin-left:auto;white-space:nowrap;}
 .dchev{font-size:9px;color:var(--tx3);transition:transform .2s;margin-left:4px;}
 .dchev.open{transform:rotate(90deg);}
@@ -141,9 +160,7 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);
 .dbg-foot{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--surf2);border-top:1px solid var(--bd);flex-shrink:0;}
 .dbg-flbl{font-size:10px;color:var(--tx3);letter-spacing:1px;text-transform:uppercase;}
 .dbg-fval{font-family:'Space Mono',monospace;font-size:12px;color:var(--acc);}
-
-/* MEMORY PANEL */
-.mem-panel{width:192px;flex-shrink:0;background:var(--surf);border-left:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;transition:width .2s ease;}
+.mem-panel{width:192px;flex-shrink:0;background:var(--surf);border-left:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;transition:width .2s;}
 .mem-panel.hide{width:0;border:none;}
 .mem-hd{padding:11px 14px;border-bottom:1px solid var(--bd);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);white-space:nowrap;}
 .mem-body{flex:1;overflow-y:auto;padding:11px;}
@@ -151,23 +168,22 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);
 .mem-stitle{font-size:9px;color:var(--acc);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
 .mem-txt{font-size:11px;color:var(--tx2);line-height:1.6;background:var(--surf2);border:1px solid var(--bd);border-radius:7px;padding:8px;white-space:pre-wrap;}
 
-/* CONFIG PAGE */
-.cfg-page{display:flex;width:100%;height:100%;overflow:hidden;}
-.cfg-sb{width:196px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--bd);padding:12px 8px;overflow-y:auto;}
+/* ── CONFIG PAGE ── */
+.cfg-sb{width:200px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--bd);padding:12px 8px;overflow-y:auto;height:100%;}
 .cfg-sb::-webkit-scrollbar{width:3px;}.cfg-sb::-webkit-scrollbar-thumb{background:var(--bd);}
 .cmi{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--tx2);transition:var(--tr);border:none;background:none;width:100%;text-align:left;font-family:'Noto Sans SC',sans-serif;}
 .cmi:hover{background:var(--surf2);color:var(--tx);}
 .cmi.on{background:var(--surf2);color:var(--acc);}
 .cmi-ico{font-size:14px;width:18px;text-align:center;}
 .cmi-sec{font-size:9px;color:var(--tx3);letter-spacing:1.5px;text-transform:uppercase;padding:13px 13px 5px;}
-.cfg-main{flex:1;overflow-y:auto;padding:26px 30px;}
+.cfg-main{flex:1;overflow-y:auto;padding:26px 30px;height:100%;}
 .cfg-main::-webkit-scrollbar{width:3px;}.cfg-main::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
 .csec{max-width:740px;display:none;}
 .csec.on{display:block;}
 .ctitle{font-family:'Noto Serif SC',serif;font-size:20px;color:var(--acc);margin-bottom:5px;}
 .csubt{font-size:12px;color:var(--tx3);margin-bottom:22px;line-height:1.6;}
 
-/* FORMS */
+/* Forms */
 .fg{margin-bottom:18px;}
 .fl{display:block;font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:6px;letter-spacing:.4px;}
 .fl span{color:var(--tx3);font-weight:400;font-size:11px;margin-left:5px;}
@@ -183,10 +199,8 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);
 .bd-btn{background:transparent;color:var(--danger);border:1px solid var(--danger);}.bd-btn:hover{background:#2a1515;}
 .bsm{padding:5px 13px;font-size:12px;}
 .div{height:1px;background:var(--bd);margin:22px 0;}
-
-/* CHAR CARDS */
 .ccards{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:11px;margin-bottom:16px;}
-.ccard{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:15px;transition:var(--tr);position:relative;}
+.ccard{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:15px;transition:var(--tr);position:relative;overflow:hidden;}
 .ccard:hover{border-color:var(--acc);transform:translateY(-2px);}
 .ccard-em{font-size:24px;margin-bottom:7px;}
 .ccard-n{font-size:14px;font-weight:500;margin-bottom:2px;}
@@ -195,30 +209,21 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);
 .ccard:hover .ccard-act{opacity:1;}
 .ccbtn{width:23px;height:23px;border-radius:6px;border:1px solid var(--bd);background:var(--surf);color:var(--tx3);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:var(--tr);}
 .ccbtn:hover{color:var(--tx);border-color:var(--acc);}
-
-/* PROMPT ORDER */
 .po{display:flex;flex-direction:column;gap:5px;}
 .poi{display:flex;align-items:center;gap:10px;padding:10px 13px;background:var(--surf2);border:1px solid var(--bd);border-radius:8px;}
 .poi-n{width:21px;height:21px;border-radius:50%;background:var(--bg);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Space Mono',monospace;color:var(--tx3);flex-shrink:0;}
 .poi-i{flex:1;}
 .poi-i strong{font-size:13px;display:block;margin-bottom:1px;}
 .poi-i span{font-size:11px;color:var(--tx3);}
-
-/* SLIDERS */
 .sr{display:flex;align-items:center;gap:11px;}
 .sr input[type=range]{flex:1;accent-color:var(--acc);cursor:pointer;}
 .sv{min-width:48px;text-align:right;font-family:'Space Mono',monospace;font-size:12px;color:var(--acc);background:var(--surf2);border:1px solid var(--bd);border-radius:6px;padding:3px 7px;}
-
-/* NUM INPUT */
 .nw{display:flex;align-items:center;gap:7px;}
 .nb{width:28px;height:32px;border-radius:7px;background:var(--surf2);border:1px solid var(--bd);color:var(--tx);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:var(--tr);}
 .nb:hover{border-color:var(--acc);color:var(--acc);}
 .nd{min-width:42px;text-align:center;background:var(--surf2);border:1px solid var(--bd);border-radius:7px;padding:6px;font-size:14px;font-family:'Space Mono',monospace;color:var(--acc);}
-
 .mlog{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:13px;font-size:12px;line-height:1.8;color:var(--tx2);min-height:64px;white-space:pre-wrap;word-break:break-word;}
 .mlog.empty{color:var(--tx3);font-style:italic;}
-
-/* EXAMPLES */
 .exlist{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
 .exi{background:var(--surf2);border:1px solid var(--bd);border-radius:9px;overflow:hidden;}
 .exi-hd{display:flex;align-items:center;gap:7px;padding:7px 11px;border-bottom:1px solid var(--bd);}
@@ -231,13 +236,78 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);
 .exadd{display:flex;flex-direction:column;gap:6px;padding:11px;background:var(--surf);border:1px solid var(--bd);border-radius:9px;}
 .exadd-r{display:flex;gap:7px;align-items:flex-start;}
 .exrsel{background:var(--surf2);border:1px solid var(--bd);border-radius:6px;color:var(--tx);font-size:11px;padding:6px 7px;outline:none;cursor:pointer;flex-shrink:0;}
-
-/* KEY REVEAL */
 .kr{width:33px;height:33px;background:var(--surf2);border:1px solid var(--bd);border-radius:8px;color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:var(--tr);flex-shrink:0;}
 .kr:hover{color:var(--tx);border-color:var(--acc);}
 .badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:9px;font-family:'Space Mono',monospace;background:var(--surf2);border:1px solid var(--bd);color:var(--tx3);margin-left:5px;vertical-align:middle;}
+code{background:var(--surf3);padding:1px 5px;border-radius:4px;font-family:'Space Mono',monospace;font-size:12px;}
 
-/* MODAL */
+/* ── <!-- CHAR MODAL -->
+<div class="moverlay" id="charModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTit">创建角色</div>
+    <div class="fg">
+      <label class="fl">Emoji</label>
+      <input type="text" id="mEmoji" class="fi" style="width:64px;text-align:center;font-size:22px" maxlength="2" placeholder="🤖">
+    </div>
+    <div style="display:flex;gap:10px">
+      <div class="fg" style="flex:1"><label class="fl">名称</label><input type="text" id="mName" class="fi" placeholder="小雪"></div>
+      <div class="fg" style="flex:2"><label class="fl">简介</label><input type="text" id="mDesc" class="fi" placeholder="一句话介绍角色"></div>
+    </div>
+    <div class="fg">
+      <label class="fl">系统提示词 <span>定义角色性格与行为</span></label>
+      <textarea id="mSys" class="fta" style="min-height:100px" placeholder="你是一个温柔体贴的AI伴侣…"></textarea>
+    </div>
+    <div class="fg">
+      <label class="fl">开场白</label>
+      <textarea id="mGreet" class="fta" style="min-height:50px" placeholder="你好～我是小雪 😊"></textarea>
+    </div>
+    <div class="fg">
+      <label class="fl">示例对话 <span>Few-shot，引导语气风格</span></label>
+      <div class="exlist" id="exList"></div>
+      <div class="exadd">
+        <div class="exadd-r">
+          <select class="exrsel" id="exRole"><option value="user">用户</option><option value="assistant">角色</option></select>
+          <textarea id="exContent" class="fi" style="flex:1;resize:none;min-height:50px;font-size:13px;line-height:1.6" placeholder="输入示例内容…"></textarea>
+        </div>
+        <button class="btn bs bsm" onclick="addEx()" style="align-self:flex-end">＋ 添加</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn bs" onclick="closeModal()">取消</button>
+      <button class="btn bp" onclick="saveChar()">保存角色</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- STEP-DEBUG MODAL -->
+<div class="step-overlay" id="stepOverlay">
+  <div class="step-modal">
+    <div class="step-title">🔬 单步调试 — Agent 工具调用拦截</div>
+    <div class="step-sub">Agent 决定调用 <code>generate_image</code> 工具。请检查并确认参数，可在此修改后再继续执行。</div>
+    <div class="step-warn" id="stepThinking"></div>
+    <div class="step-field">
+      <label>prompt <span style="color:var(--tx3);font-weight:400">— 图片描述（必填）</span></label>
+      <textarea id="stepPromptEl" rows="4"></textarea>
+    </div>
+    <div class="step-field">
+      <label>style <span style="color:var(--tx3);font-weight:400">— 风格追加词（可选）</span></label>
+      <input type="text" id="stepStyleEl" placeholder="留空则不追加">
+    </div>
+    <div class="step-field">
+      <label>tool_call_id <span style="color:var(--tx3);font-weight:400">— 内部 ID（勿改）</span></label>
+      <input type="text" id="stepTcIdEl" readonly style="opacity:.5">
+    </div>
+    <div class="step-actions">
+      <button class="btn bs" onclick="stepAbort()">✕ 取消（跳过生图）</button>
+      <button class="btn bp" onclick="stepConfirm()">▶ 确认执行</button>
+    </div>
+  </div>
+</div> ── */
 .moverlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
 .moverlay.on{opacity:1;pointer-events:all;}
 .modal{background:var(--surf);border:1px solid var(--bd);border-radius:15px;padding:24px;width:550px;max-width:96vw;max-height:86vh;overflow-y:auto;transform:scale(.95) translateY(10px);transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
@@ -245,43 +315,9 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--tx);
 .modal::-webkit-scrollbar{width:3px;}.modal::-webkit-scrollbar-thumb{background:var(--bd);}
 .modal-title{font-family:'Noto Serif SC',serif;font-size:17px;color:var(--acc);margin-bottom:18px;}
 .modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px;}
-
-/* IMAGE LIGHTBOX */
 .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;display:flex;align-items:center;justify-content:center;cursor:zoom-out;opacity:0;pointer-events:none;transition:opacity .2s;}
 .lightbox.on{opacity:1;pointer-events:all;}
 .lightbox img{max-width:90vw;max-height:90vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.6);}
-
-/* TOAST */
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surf2);border:1px solid var(--bd);border-radius:10px;padding:10px 20px;font-size:13px;color:var(--tx);z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none;}
-.toast.on{transform:translateX(-50%) translateY(0);opacity:1;}
-.toast.ok{border-color:var(--ok);color:var(--ok);}
-.toast.err{border-color:var(--danger);color:var(--danger);}
-
-code{background:var(--surf3);padding:1px 5px;border-radius:4px;font-family:'Space Mono',monospace;font-size:12px;}
-
-/* TTS play button */
-.tts-btn{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:1px solid var(--bd2);background:transparent;color:var(--tx3);cursor:pointer;font-size:12px;transition:var(--tr);flex-shrink:0;margin-left:4px;vertical-align:middle;}
-.tts-btn:hover{border-color:var(--acc2);color:var(--acc2);background:rgba(126,154,200,.1);}
-.tts-btn.playing{border-color:var(--acc3);color:var(--acc3);background:rgba(200,126,160,.1);animation:tts-pulse 1.2s infinite;}
-@keyframes tts-pulse{0%,100%{opacity:1}50%{opacity:.5}}
-
-/* Agent Trace (思维链) */
-.trace-wrap{margin-top:6px;}
-.trace-hd{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;padding:5px 8px;border-radius:7px;background:rgba(126,154,200,.07);border:1px solid rgba(126,154,200,.2);transition:var(--tr);}
-.trace-hd:hover{background:rgba(126,154,200,.12);}
-.trace-hd-icon{font-size:11px;}
-.trace-hd-label{font-size:11px;color:var(--acc2);font-family:'Space Mono',monospace;flex:1;}
-.trace-hd-chev{font-size:9px;color:var(--tx3);transition:transform .2s;}
-.trace-hd-chev.open{transform:rotate(90deg);}
-.trace-body{display:none;margin-top:6px;padding:10px 12px;background:var(--surf2);border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--tx2);line-height:1.8;white-space:pre-wrap;word-break:break-all;max-height:220px;overflow-y:auto;}
-.trace-body.open{display:block;}
-.trace-body::-webkit-scrollbar{width:2px;}.trace-body::-webkit-scrollbar-thumb{background:var(--bd);}
-.trace-step{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--bd);}
-.trace-step:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
-.trace-step-label{font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
-.ts-think{color:#b07ecc;}.ts-call{color:#7ec8b0;}.ts-result{color:#7eaacc;}.ts-reply{color:#7ecca0;}
-
-/* Step-debug modal */
 .step-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
 .step-overlay.on{opacity:1;pointer-events:all;}
 .step-modal{background:var(--surf);border:1px solid var(--acc2);border-radius:16px;padding:26px;width:560px;max-width:96vw;max-height:80vh;overflow-y:auto;}
@@ -294,8 +330,26 @@ code{background:var(--surf3);padding:1px 5px;border-radius:4px;font-family:'Spac
 .step-field textarea:focus,.step-field input:focus{border-color:var(--acc2);}
 .step-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
 .step-warn{background:rgba(200,126,126,.08);border:1px solid rgba(200,126,126,.3);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--warn);margin-bottom:16px;line-height:1.7;}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surf2);border:1px solid var(--bd);border-radius:10px;padding:10px 20px;font-size:13px;color:var(--tx);z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none;}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1;}
+.toast.ok{border-color:var(--ok);color:var(--ok);}
+.toast.err{border-color:var(--danger);color:var(--danger);}
 
-/* Prompt Assembly Preview panel */
+/* Agent trace */
+.trace-wrap{margin-top:6px;}
+.trace-hd{display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 8px;border-radius:7px;background:rgba(126,154,200,.07);border:1px solid rgba(126,154,200,.2);transition:var(--tr);}
+.trace-hd:hover{background:rgba(126,154,200,.12);}
+.trace-hd-label{font-size:11px;color:var(--acc2);font-family:'Space Mono',monospace;flex:1;}
+.trace-hd-chev{font-size:9px;color:var(--tx3);transition:transform .2s;margin-left:4px;}
+.trace-hd-chev.open{transform:rotate(90deg);}
+.trace-body{display:none;margin-top:6px;padding:10px 12px;background:var(--surf2);border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--tx2);line-height:1.8;white-space:pre-wrap;word-break:break-all;max-height:220px;overflow-y:auto;}
+.trace-body.open{display:block;}
+.trace-step{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--bd);}
+.trace-step:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.trace-step-label{font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
+.ts-think{color:#b07ecc;}.ts-call{color:#7ec8b0;}.ts-result{color:#7eaacc;}.ts-reply{color:#7ecca0;}
+
+/* PAP panel */
 .pap-panel{background:var(--surf2);border:1px solid var(--bd);border-radius:10px;margin-top:22px;overflow:hidden;}
 .pap-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bd);cursor:pointer;user-select:none;}
 .pap-hd:hover{background:rgba(255,255,255,.02);}
@@ -307,99 +361,100 @@ code{background:var(--surf3);padding:1px 5px;border-radius:4px;font-family:'Spac
 .pap-section{margin-bottom:12px;}
 .pap-slabel{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'Space Mono',monospace;display:inline-block;margin-bottom:5px;}
 .pap-content{font-family:'Space Mono',monospace;font-size:10px;color:var(--tx2);line-height:1.7;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px 10px;white-space:pre-wrap;word-break:break-all;max-height:120px;overflow-y:auto;}
-.pap-content::-webkit-scrollbar{width:2px;}.pap-content::-webkit-scrollbar-thumb{background:var(--bd);}
 .pap-total{font-size:10px;color:var(--tx3);text-align:right;margin-top:8px;font-family:'Space Mono',monospace;}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
   <div class="logo">幻境 · AI伴侣</div>
   <div class="tabs">
     <button class="tab on" id="tab-chat" onclick="gotoPage('chat')">💬 聊天</button>
-    <button class="tab" id="tab-cfg"  onclick="gotoPage('cfg')">⚙️ 配置</button>
+    <button class="tab"    id="tab-cfg"  onclick="gotoPage('cfg')">⚙️ 配置</button>
   </div>
   <div class="nav-r">
     <div class="chip" id="modelChip">—</div>
-    <div class="dot off" id="apiDot" title="未连接"></div>
+    <div class="dot off" id="apiDot"></div>
   </div>
 </nav>
 
 <div class="main">
 
-<!-- ══ CHAT ══ -->
-<div class="page on" id="page-chat">
+<!-- ══ CHAT PAGE ══ -->
+<div id="page-chat" style="display:flex;width:100%;height:100%;">
   <div class="csb">
-    <div class="csb-hd">角色列表</div>
+    <div class="csb-hd">
+      <span class="csb-title">消息</span>
+      <button class="ibtn" title="新建角色" onclick="gotoPage('cfg');gotoCfg('chars',document.getElementById('cmi-chars'))">＋</button>
+    </div>
     <div class="clist" id="charList"></div>
   </div>
-
   <div class="chat-wrap">
     <div id="chatHd" class="chat-hd" style="display:none">
       <div class="chat-hd-av" id="hdAv"></div>
       <div class="chat-hd-info"><h3 id="hdName"></h3><p id="hdDesc"></p></div>
       <div class="chat-hd-act">
-        <button class="ibtn" id="btnDbg" title="调试视图" onclick="toggleDbgPanel()">🔍</button>
-        <button class="ibtn" id="btnStep" title="单步调试模式" onclick="toggleStepMode()" style="font-size:11px;font-weight:700">S</button>
-        <button class="ibtn" id="btnMem" title="长期记忆" onclick="toggleMemPanel()">🧠</button>
-        <button class="ibtn" title="清除对话" onclick="clearChat()">🗑️</button>
+        <button class="ibtn" id="btnDbg"  title="调试" onclick="toggleDbgPanel()">🔍</button>
+        <button class="ibtn" id="btnStep" title="单步调试" onclick="toggleStepMode()" style="font-size:9px;letter-spacing:-.5px">STEP</button>
+        <button class="ibtn" id="btnMem"  title="记忆" onclick="toggleMemPanel()">🧠</button>
+        <button class="ibtn" title="清除" onclick="clearChat()">🗑️</button>
       </div>
     </div>
     <div class="msgs" id="msgsArea"></div>
-    <div class="inp-area">
-      <div class="inp-row">
-        <textarea class="tinp" id="msgInp" placeholder="输入消息…" rows="1"
-          onkeydown="onKey(event)" oninput="autoH(this)" disabled></textarea>
-        <button class="sbtn" id="sendBtn" onclick="sendMsg()" disabled>➤</button>
+    <div id="inpArea" style="display:none">
+      <div class="inp-area">
+        <div class="inp-row">
+          <textarea class="tinp" id="msgInp" placeholder="发消息…" rows="1"
+            onkeydown="onKey(event)" oninput="autoH(this)" disabled></textarea>
+          <button class="sbtn" id="sendBtn" onclick="sendMsg()" disabled>➤</button>
+        </div>
+        <div class="inp-hint">Enter 发送 · Shift+Enter 换行</div>
       </div>
-      <div class="inp-hint">Enter 发送 · Shift+Enter 换行</div>
     </div>
   </div>
-
-  <!-- Debug Panel -->
   <div class="dbg-panel hide" id="dbgPanel">
     <div class="dbg-hd"><div class="dbg-title">🔍 提示词 & 工具调试</div></div>
     <div class="dbg-body" id="dbgBody"><div style="padding:18px;font-size:12px;color:var(--tx3);text-align:center">发送消息后查看</div></div>
-    <div class="dbg-foot">
-      <div class="dbg-flbl">Token 用量</div>
-      <div class="dbg-fval" id="dbgTk">—</div>
-    </div>
+    <div class="dbg-foot"><div class="dbg-flbl">Token</div><div class="dbg-fval" id="dbgTk">—</div></div>
   </div>
-
-  <!-- Memory Panel -->
   <div class="mem-panel hide" id="memPanel">
     <div class="mem-hd">🧠 长期记忆</div>
     <div class="mem-body" id="memBody"><div style="color:var(--tx3);font-size:11px;text-align:center;padding:18px">暂无记忆</div></div>
   </div>
 </div>
 
-<!-- ══ CONFIG ══ -->
-<div class="page cfg-page" id="page-cfg">
+<!-- ══ CONFIG PAGE ══ -->
+<div id="page-cfg" style="display:none;width:100%;height:100%;">
   <div class="cfg-sb">
     <div class="cmi-sec">基础</div>
-    <button class="cmi on" id="cmi-api"  onclick="gotoCfg('api',this)"><span class="cmi-ico">🔑</span>API 配置</button>
-    <button class="cmi" id="cmi-chars"   onclick="gotoCfg('chars',this)"><span class="cmi-ico">🎭</span>角色管理</button>
+    <button class="cmi on" id="cmi-api"   onclick="gotoCfg('api',this)"><span class="cmi-ico">🔑</span>API 配置</button>
+    <button class="cmi"    id="cmi-chars" onclick="gotoCfg('chars',this)"><span class="cmi-ico">🎭</span>角色管理</button>
     <div class="cmi-sec">提示词工程</div>
-    <button class="cmi" id="cmi-asm"     onclick="gotoCfg('asm',this)"><span class="cmi-ico">🧩</span>组装顺序</button>
-    <button class="cmi" id="cmi-gp"      onclick="gotoCfg('gp',this)"><span class="cmi-ico">🌐</span>全局底座</button>
-    <button class="cmi" id="cmi-mem"     onclick="gotoCfg('mem',this)"><span class="cmi-ico">🧠</span>记忆设置</button>
+    <button class="cmi"    id="cmi-asm"   onclick="gotoCfg('asm',this)"><span class="cmi-ico">🧩</span>组装顺序</button>
+    <button class="cmi"    id="cmi-gp"    onclick="gotoCfg('gp',this)"><span class="cmi-ico">🌐</span>全局底座</button>
+    <button class="cmi"    id="cmi-mem"   onclick="gotoCfg('mem',this)"><span class="cmi-ico">🧠</span>记忆设置</button>
     <div class="cmi-sec">模型 & Agent</div>
-    <button class="cmi" id="cmi-mp"      onclick="gotoCfg('mp',this)"><span class="cmi-ico">⚗️</span>模型调试</button>
-    <button class="cmi" id="cmi-agent"   onclick="gotoCfg('agent',this)"><span class="cmi-ico">🤖</span>Agent 工具</button>
-    <button class="cmi" id="cmi-tts"     onclick="gotoCfg('tts',this)"><span class="cmi-ico">🔊</span>语音合成</button>
+    <button class="cmi"    id="cmi-mp"    onclick="gotoCfg('mp',this)"><span class="cmi-ico">⚗️</span>模型调试</button>
+    <button class="cmi"    id="cmi-agent" onclick="gotoCfg('agent',this)"><span class="cmi-ico">🤖</span>Agent 工具</button>
+    <button class="cmi"    id="cmi-tts"   onclick="gotoCfg('tts',this)"><span class="cmi-ico">🔊</span>语音合成</button>
   </div>
-
   <div class="cfg-main">
-
-    <!-- API -->
+<!-- API -->
     <div class="csec on" id="csec-api">
       <div class="ctitle">API 配置</div>
       <div class="csubt">配置 OpenRouter API Key 与对话模型</div>
+
+      <div style="background:#1a1a10;border:1px solid #60601a;border-radius:9px;padding:12px 14px;margin-bottom:18px;font-size:12px;line-height:1.9;color:#c8c07e">
+        <strong>⚠️ 注意：这里填的是 OpenRouter 的 Key，不是 ElevenLabs 的 Key</strong><br>
+        OpenRouter Key 格式：<code style="background:#2a2a10;padding:1px 6px;border-radius:4px">sk-or-v1-xxxxxxxxxxxxxxxx</code><br>
+        获取地址：<a href="https://openrouter.ai/keys" target="_blank" style="color:var(--acc2)">openrouter.ai/keys</a>（免费注册，有免费额度）<br>
+        ElevenLabs Key（<code style="background:#2a2a10;padding:1px 6px;border-radius:4px">sk_xxx</code>）请在下方「语音合成」里填写
+      </div>
+
       <div class="fg">
-        <label class="fl">OpenRouter API Key</label>
+        <label class="fl">OpenRouter API Key <span>格式：sk-or-v1-…</span></label>
         <div class="irow">
-          <input type="password" id="orKeyEl" class="fi mono" placeholder="sk-or-v1-…">
+          <input type="password" id="orKeyEl" class="fi mono" placeholder="sk-or-v1-（在 openrouter.ai/keys 获取）">
           <button class="kr" onclick="toggleKey()">👁️</button>
           <button class="btn bs bsm" onclick="saveOrKey()">保存</button>
         </div>
@@ -861,7 +916,6 @@ code{background:var(--surf3);padding:1px 5px;border-radius:4px;font-family:'Spac
         <span style="font-size:11px;color:var(--tx3)" id="ttsStatusTip"></span>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -936,8 +990,8 @@ code{background:var(--surf3);padding:1px 5px;border-radius:4px;font-family:'Spac
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script>
+
 // ══════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════
@@ -1116,17 +1170,18 @@ function toast(msg, type='') {
   _tt = setTimeout(() => el.classList.remove('on'), 3000);
 }
 
-function persist() { localStorage.setItem('aic6', JSON.stringify(C)); }
+function persist() { localStorage.setItem('aic7', JSON.stringify(C)); }
 
 function loadState() {
   // Clear old localStorage versions to prevent stale data (especially old API keys)
   localStorage.removeItem('aic4');
   localStorage.removeItem('aic5');
+  localStorage.removeItem('aic6');;
   try {
-    const raw = localStorage.getItem('aic6');
+    const raw = localStorage.getItem('aic7');
     if (!raw) { C.chars = JSON.parse(JSON.stringify(DEF_CHARS)); return; }
     const p = JSON.parse(raw);
-    C.orKey         = '';  // Always start empty — user must enter key manually
+    C.orKey         = p.orKey || '';
     C.orModel       = p.orModel       || 'stepfun/step-3.5-flash:free';
     C.globalPrompt  = p.globalPrompt  || DEF_GLOBAL_PROMPT;
     C.advancePrompt = p.advancePrompt || '';
@@ -1252,6 +1307,9 @@ function init() {
 
   if (C.activeId && getChar(C.activeId)) restoreActiveChat();
   document.getElementById('apiDot').classList.remove('off');
+  // Set initial page display via JS
+  document.getElementById('page-chat').style.display = 'flex';
+  document.getElementById('page-cfg').style.display  = 'none';
 }
 
 function setSl(sid, vid, val, fmt) {
@@ -1263,8 +1321,15 @@ function setSl(sid, vid, val, fmt) {
 // NAVIGATION
 // ══════════════════════════════════════════════════
 function gotoPage(p) {
-  document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
-  document.getElementById('page-'+p).classList.add('on');
+  // Hide all pages
+  document.getElementById('page-chat').style.display = 'none';
+  document.getElementById('page-cfg').style.display  = 'none';
+  // Show target
+  if (p === 'chat') {
+    document.getElementById('page-chat').style.display = 'flex';
+  } else {
+    document.getElementById('page-cfg').style.display  = 'flex';
+  }
   document.getElementById('tab-chat').classList.toggle('on', p==='chat');
   document.getElementById('tab-cfg').classList.toggle('on', p==='cfg');
   if(p==='cfg') { updateMemLog(); refreshPreview(); refreshPAP(); }
@@ -1280,11 +1345,22 @@ function gotoCfg(s, el) {
 // SIDEBAR / CHARS
 // ══════════════════════════════════════════════════
 function renderSidebar() {
-  document.getElementById('charList').innerHTML = C.chars.map(c => `
-    <div class="ci${C.activeId===c.id?' on':''}" onclick="selectChar('${c.id}')">
-      <div class="cav">${c.emoji}</div>
-      <div><div class="cn">${esc(c.name)}</div><div class="cd">${esc(c.desc)}</div></div>
-    </div>`).join('');
+  document.getElementById('charList').innerHTML = C.chars.map(ch => {
+    const conv    = (C.convs[ch.id]||[]).filter(m=>!m.hidden);
+    const last    = conv.slice(-1)[0];
+    const preview = last
+      ? (last.role==='user'?'你：':'')+(last.content||'[图片]').replace(/\n/g,' ').slice(0,28)+(last.content?.length>28?'…':'')
+      : ch.desc;
+    const ts = last ? ts2t(last.ts) : '';
+    return `<div class="ci${C.activeId===ch.id?' on':''}" onclick="selectChar('${ch.id}')">
+      <div class="cav">${ch.emoji}</div>
+      <div class="ci-info">
+        <div class="cn">${esc(ch.name)}</div>
+        <div class="cd">${esc(preview)}</div>
+      </div>
+      ${ts?`<div class="ci-time">${ts}</div>`:''}
+    </div>`;
+  }).join('');
 }
 function renderCfgChars() {
   document.getElementById('cfgCharCards').innerHTML = C.chars.map(c => `
@@ -1303,33 +1379,38 @@ function renderCfgChars() {
 function selectChar(id) {
   const char = getChar(id); if (!char) return;
   C.activeId = id; persist(); renderSidebar();
+  // Header
   document.getElementById('chatHd').style.display = 'flex';
-  document.getElementById('hdAv').textContent  = char.emoji;
+  document.getElementById('hdAv').textContent   = char.emoji;
   document.getElementById('hdName').textContent = char.name;
   document.getElementById('hdDesc').textContent = char.desc;
+  // Input bar
+  document.getElementById('inpArea').style.display = '';
   document.getElementById('sendBtn').disabled   = false;
   document.getElementById('msgInp').disabled    = false;
   document.getElementById('msgInp').focus();
+  // Init conversation
   if (!C.convs[id]) {
     C.convs[id] = [];
     if (char.greeting) C.convs[id].push({role:'assistant',content:char.greeting,ts:Date.now()});
     persist();
   }
-  renderMsgs(); updateMemPanel();
-  refreshPAP();
+  renderMsgs(); updateMemPanel(); refreshPAP();
+  // Reset debug
   document.getElementById('dbgBody').innerHTML = '<div style="padding:18px;font-size:12px;color:var(--tx3);text-align:center">发送消息后查看组装详情</div>';
   document.getElementById('dbgTk').textContent = '—';
 }
 
 function restoreActiveChat() {
   const char = activeChar(); if (!char) { C.activeId=null; return; }
-  document.getElementById('chatHd').style.display='flex';
-  document.getElementById('hdAv').textContent  = char.emoji;
+  document.getElementById('chatHd').style.display = 'flex';
+  document.getElementById('hdAv').textContent   = char.emoji;
   document.getElementById('hdName').textContent = char.name;
   document.getElementById('hdDesc').textContent = char.desc;
+  document.getElementById('inpArea').style.display = '';
   document.getElementById('sendBtn').disabled   = false;
   document.getElementById('msgInp').disabled    = false;
-  renderMsgs(); updateMemPanel();
+  renderMsgs(); updateMemPanel(); refreshPAP();
 }
 
 // ══════════════════════════════════════════════════
@@ -1338,65 +1419,78 @@ function restoreActiveChat() {
 function renderMsgs() {
   const area = document.getElementById('msgsArea');
   const char = activeChar();
-  const msgs = (C.convs[C.activeId] || []).filter(m => !m.hidden);
+  const msgs  = (C.convs[C.activeId]||[]).filter(m=>!m.hidden);
 
   if (!char || msgs.length === 0) {
-    area.innerHTML = `<div class="empty"><div class="empty-icon">${char?char.emoji:'✨'}</div><div class="empty-txt">${char?'开始聊天吧～':'从左侧选择一个角色'}</div></div>`;
+    area.innerHTML = !char
+      ? `<div class="empty"><div class="empty-icon">💬</div><div class="empty-txt">选择一个角色<br>开始你的故事</div></div>`
+      : `<div class="empty"><div style="font-size:52px;margin-bottom:8px">${char.emoji}</div>
+         <div style="font-size:15px;font-weight:600;color:var(--tx);margin-bottom:6px">${esc(char.name)}</div>
+         <div class="empty-txt">${esc(char.desc)}</div>
+         <div class="empty-cta" style="margin-top:10px">发一条消息，开始聊吧 ↓</div></div>`;
     return;
   }
 
-  // index of last assistant msg
   let lastAsstIdx = -1;
-  for (let i = msgs.length-1; i >= 0; i--) { if (msgs[i].role==='assistant') { lastAsstIdx=i; break; } }
+  for (let i=msgs.length-1;i>=0;i--){ if(msgs[i].role==='assistant'){lastAsstIdx=i;break;} }
 
   area.innerHTML = msgs.map((m, idx) => {
-    const isUser = m.role === 'user';
-    const av   = isUser ? '🧑' : char.emoji;
-    const name = isUser ? '你' : esc(char.name);
-    const time = ts2t(m.ts);
-    const tk   = m.tokens ? `<span class="mtk">~${m.tokens}tk</span>` : '';
+    const isUser  = m.role === 'user';
+    const av      = isUser ? '🧑' : char.emoji;
+    const name    = isUser ? '你' : esc(char.name);
+    const time    = ts2t(m.ts);
+    const tk      = m.tokens ? `<span class="mtk">~${m.tokens}tk</span>` : '';
 
-    // tool call badge
+    // Grouping
+    const prev    = msgs.slice(0,idx).reverse().find(x=>!x.hidden);
+    const isGroup = prev && prev.role===m.role && !m.toolCall && !m.imgUrl;
+    const isFirst = !isGroup;
+
+    // Tool badge
     const toolBadge = m.toolCall
       ? `<div class="tool-badge"><span class="tool-badge-icon">🎨</span>${esc(m.toolCall)}</div>` : '';
 
-    // image block
+    // Image
     let imgBlock = '';
     if (m.imgUrl) {
       imgBlock = `<div class="msg-img-wrap">
-        <img class="msg-img" src="${esc(m.imgUrl)}" alt="生成图片" onclick="openLightbox('${esc(m.imgUrl)}')" loading="lazy"
-          onerror="this.parentElement.innerHTML='<div style=\\'padding:12px;font-size:11px;color:var(--danger)\\'>图片加载失败</div>'">
+        <img class="msg-img" src="${esc(m.imgUrl)}" alt="生成图片"
+          onclick="openLightbox('${esc(m.imgUrl)}')" loading="lazy"
+          onerror="this.parentElement.innerHTML='<div style=\'padding:10px;color:var(--danger);font-size:11px\'>图片加载失败</div>'">
         ${m.imgPrompt?`<div class="msg-img-prompt">${esc(m.imgPrompt.slice(0,80))}</div>`:''}
       </div>`;
     }
 
-    // text bubble (may be empty if only image)
-    const ttsBtn = (!isUser && m.content && C.tts?.enabled)
-      ? `<button class="tts-btn" id="tts-${idx}" onclick="ttsPlay(${idx})" title="朗读台词">🔊</button>` : '';
-
-    const bubbleText = m.content ? `<div class="mbub">${renderMd(m.content)}${ttsBtn}</div>` : '';
-
-    // scene advance button — only on last assistant message
-    const advBtn = (!isUser && idx === lastAsstIdx) ? `
-      <div class="adv-wrap">
-        <button class="adv-btn" onclick="advanceScene()">▶ 继续推进场景</button>
-      </div>` : '';
-
-    // agent trace (思维链) — only on image-bearing assistant messages
+    // Agent trace
     const traceHtml = (!isUser && m.trace && m.trace.length) ? renderTrace(m.trace) : '';
 
-    return `<div class="msg${isUser?' u':''}">
-      <div class="mav">${av}</div>
+    // TTS button
+    const ttsBtn = (!isUser && m.content && C.tts?.enabled)
+      ? `<button class="tts-btn" id="tts-${idx}" onclick="ttsPlay(${idx})" title="朗读">🔊</button>` : '';
+
+    // Text bubble
+    const bubbleText = m.content ? `<div class="mbub">${renderMd(m.content)}${ttsBtn}</div>` : '';
+
+    // Advance button
+    const advBtn = (!isUser && idx===lastAsstIdx) ? `
+      <div class="adv-wrap"><button class="adv-btn" onclick="advanceScene()">▶ 继续推进</button></div>` : '';
+
+    // Avatar — only show on first in group
+    const avHtml = isFirst ? `<div class="mav">${av}</div>` : `<div class="mav" style="visibility:hidden"></div>`;
+
+    return `<div class="msg${isUser?' u':''}${isGroup?' grouped':''}${isFirst?' first':''}">
+      ${isUser ? '' : avHtml}
       <div class="mbody">
-        <div class="mname">${name}</div>
+        ${isFirst && !isUser ? `<div class="mname">${name}</div>` : ''}
         ${toolBadge}
         ${bubbleText}
         ${imgBlock}
         ${traceHtml}
         <div class="mfoot"><span class="mtime">${time}</span>${tk}</div>
-        ${advBtn}
       </div>
-    </div>`;
+      ${isUser ? avHtml : ''}
+    </div>
+    ${advBtn}`;
   }).join('');
 
   area.scrollTop = area.scrollHeight;
@@ -1905,6 +1999,9 @@ async function callApi(cid, userText) {
   const histN = (C.shortMem || 10) * 2;
   const model = C.orModel || 'deepseek/deepseek-chat-v3-0324';
   const key   = C.orKey   || '';
+  if (!key) {
+    throw new Error('API Key 未填入。请到「配置 → API配置」填入 Key 后点「保存」按钮。');
+  }
 
   // ── build system ──
   const sysParts = [];
@@ -2063,6 +2160,7 @@ async function orFetch(body, key, retries = 2) {
     }
 
     let res;
+    console.log('[DEBUG] 发送请求，key长度:', key ? key.length : 0, '| key前12字符:', key ? key.slice(0,12) : '(空)');
     try {
       res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -2361,13 +2459,22 @@ function toggleKey() {
   else{el.type='password';el.value=C.orKey?'••••••••••••••••'+C.orKey.slice(-6):'';}
 }
 function saveOrKey() {
-  const el=document.getElementById('orKeyEl');
-  const v=el.type==='text'?el.value.trim():null;
-  if(v&&!v.startsWith('•')) C.orKey=v;
-  el.type='password'; el.value=C.orKey?'••••••••••••••••'+C.orKey.slice(-6):'';
-  const ks=document.getElementById('keyStatus');
-  if(ks) ks.textContent=C.orKey?'✅ Key 已保存（…'+C.orKey.slice(-6)+'）':'';
-  persist(); toast('API Key 已保存','ok');
+  const el = document.getElementById('orKeyEl');
+  // Switch to text type first to read actual value without masking interference
+  const prevType = el.type;
+  el.type = 'text';
+  const raw = el.value.trim();
+  el.type = prevType;
+  if (raw && !raw.startsWith('•')) {
+    C.orKey = raw;
+  }
+  // Mask display
+  el.type = 'password';
+  el.value = C.orKey ? '••••••••••••••••' + C.orKey.slice(-6) : '';
+  const ks = document.getElementById('keyStatus');
+  if (ks) ks.textContent = C.orKey ? '✅ Key 已保存（…' + C.orKey.slice(-6) + '）' : '未填入';
+  persist();
+  toast(C.orKey ? 'Key 已保存：…' + C.orKey.slice(-6) : '请先填入 Key', C.orKey ? 'ok' : 'err');
 }
 function saveOrModel() {
   const v=document.getElementById('orModelEl').value.trim();
@@ -2375,12 +2482,13 @@ function saveOrModel() {
   persist(); toast('模型已保存：'+C.orModel,'ok');
 }
 async function testConn() {
+  if (!C.orKey) { toast('请先填入并保存 API Key', 'err'); return; }
   toast('测试连接中…');
   try {
     const d = await orFetch({model:C.orModel,max_tokens:5,messages:[{role:'user',content:'hi'}]}, C.orKey);
     document.getElementById('apiDot').classList.remove('off');
-    toast('✅ 连接成功！模型：'+C.orModel,'ok');
-  } catch(e) { toast('❌ '+e.message,'err'); }
+    toast('✅ 连接成功！', 'ok');
+  } catch(e) { toast('❌ ' + e.message, 'err'); }
 }
 
 // ══════════════════════════════════════════════════
@@ -2479,14 +2587,14 @@ function openModal() {
   renderExList(); document.getElementById('charModal').classList.add('on');
 }
 function openEdit(id) {
-  const c=getChar(id); if(!c) return;
-  C.editId=id; C.pendEx=JSON.parse(JSON.stringify(c.examples||[]));
+  const ch=getChar(id); if(!ch) return;
+  C.editId=id; C.pendEx=JSON.parse(JSON.stringify(ch.examples||[]));
   document.getElementById('modalTit').textContent='编辑角色';
-  document.getElementById('mEmoji').value=c.emoji;
-  document.getElementById('mName').value=c.name;
-  document.getElementById('mDesc').value=c.desc;
-  document.getElementById('mSys').value=c.system;
-  document.getElementById('mGreet').value=c.greeting||'';
+  document.getElementById('mEmoji').value=ch.emoji;
+  document.getElementById('mName').value=ch.name;
+  document.getElementById('mDesc').value=ch.desc;
+  document.getElementById('mSys').value=ch.system;
+  document.getElementById('mGreet').value=ch.greeting||'';
   renderExList(); document.getElementById('charModal').classList.add('on');
 }
 function closeModal() { document.getElementById('charModal').classList.remove('on'); }
@@ -2544,6 +2652,7 @@ function autoH(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollH
 document.getElementById('charModal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
 
 init();
+
 </script>
 </body>
 </html>
