@@ -387,10 +387,655 @@ code{background:var(--surf3);padding:1px 5px;border-radius:4px;font-family:'Spac
 .pap-slabel{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'Space Mono',monospace;display:inline-block;margin-bottom:5px;}
 .pap-content{font-family:'Space Mono',monospace;font-size:10px;color:var(--tx2);line-height:1.7;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px 10px;white-space:pre-wrap;word-break:break-all;max-height:120px;overflow-y:auto;}
 .pap-total{font-size:10px;color:var(--tx3);text-align:right;margin-top:8px;font-family:'Space Mono',monospace;}
+
+/* ═══════════════════════════════════════════
+   MOBILE IMMERSIVE LAYER
+   Only shown on screens < 768px
+   ═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Hide desktop UI on mobile */
+  .nav, .main { display: none !important; }
+  #mobileApp  { display: flex !important; }
+}
+@media (min-width: 769px) {
+  #mobileApp { display: none !important; }
+}
+
+#mobileApp {
+  position: fixed; inset: 0;
+  background: #0e0b1a;
+  display: none;
+  flex-direction: column;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: #e8e4dc;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+/* ── Mobile pages ── */
+.mob-page { display:none; flex-direction:column; height:100%; position:absolute; inset:0; }
+.mob-page.on { display:flex; }
+
+/* ══ PAGE: MSG LIST ══ */
+#mobMsgList { background:#0e0b1a; }
+
+.mob-topbar {
+  padding: 52px 20px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.mob-topbar-title {
+  font-size: 28px; font-weight: 700; color: #fff;
+  font-family: 'Noto Serif SC', serif;
+}
+.mob-search {
+  margin: 0 16px 12px;
+  background: #1c1830; border-radius: 12px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; flex-shrink: 0;
+}
+.mob-search input {
+  background: none; border: none; outline: none;
+  color: #e8e4dc; font-size: 14px; flex: 1;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.mob-search input::placeholder { color: #5a5568; }
+.mob-search-icon { color: #5a5568; font-size: 15px; }
+
+.mob-charlist {
+  flex: 1; overflow-y: auto; padding: 0 0 90px;
+}
+.mob-charlist::-webkit-scrollbar { display: none; }
+
+.mob-ci {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 20px; cursor: pointer;
+  transition: background .15s; position: relative;
+}
+.mob-ci:active { background: rgba(255,255,255,.05); }
+
+.mob-ci-av {
+  width: 54px; height: 54px; border-radius: 50%;
+  flex-shrink: 0; display: flex; align-items: center;
+  justify-content: center; font-size: 26px;
+  background: #1c1830; position: relative;
+  overflow: hidden;
+}
+.mob-ci-av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.mob-ci-unread {
+  position: absolute; top: 2px; right: 2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #7b5ea7; border: 2px solid #0e0b1a;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: #fff;
+}
+.mob-ci-dot {
+  position: absolute; bottom: 3px; right: 3px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #7b5ea7; border: 2px solid #0e0b1a;
+}
+.mob-ci-body { flex: 1; min-width: 0; }
+.mob-ci-top { display:flex; align-items:center; justify-content:space-between; margin-bottom: 3px; }
+.mob-ci-name { font-size: 15px; font-weight: 500; color: #fff; }
+.mob-ci-time { font-size: 11px; color: #5a5568; flex-shrink: 0; }
+.mob-ci-preview { font-size: 13px; color: #6b6680; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* ── Bottom nav ── */
+.mob-bottomnav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 80px; background: #0e0b1a;
+  border-top: 1px solid #1c1830;
+  display: flex; align-items: center; justify-content: space-around;
+  padding-bottom: 16px; z-index: 100;
+}
+.mob-navbtn {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; color: #5a5568; font-size: 11px;
+  cursor: pointer; padding: 6px 20px; border-radius: 12px;
+  transition: color .2s; border: none; background: none;
+}
+.mob-navbtn .mob-nav-icon { font-size: 22px; }
+.mob-navbtn.on { color: #9b6dff; }
+.mob-navbtn.on .mob-nav-icon { filter: drop-shadow(0 0 6px #9b6dff88); }
+.mob-navbtn-msg { position: relative; }
+.mob-navbtn-msg .mob-notif {
+  position: absolute; top: 0; right: 14px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #9b6dff; border: 1.5px solid #0e0b1a;
+}
+
+/* ══ PAGE: IMMERSIVE CHAT ══ */
+#mobChat {
+  background: #0e0b1a;
+  position: relative; overflow: hidden;
+}
+
+/* Chat background (role cover image) */
+.mob-chat-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: top center;
+  background-repeat: no-repeat;
+}
+.mob-chat-bg-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(14,11,26,.3) 0%,
+    rgba(14,11,26,.1) 30%,
+    rgba(14,11,26,.6) 65%,
+    rgba(14,11,26,.95) 85%,
+    #0e0b1a 100%
+  );
+}
+
+/* Chat topbar */
+.mob-chat-topbar {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; gap: 12px;
+  padding: 52px 16px 12px; flex-shrink: 0;
+}
+.mob-chat-back {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.1); backdrop-filter: blur(8px);
+  border: none; color: #fff; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+}
+.mob-chat-avwrap { position: relative; flex-shrink: 0; }
+.mob-chat-av {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #1c1830; display: flex; align-items: center;
+  justify-content: center; font-size: 22px; overflow: hidden;
+  border: 1.5px solid rgba(155,109,255,.5);
+}
+.mob-chat-av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.mob-chat-avcount {
+  position: absolute; bottom: -2px; right: -4px;
+  background: #7b5ea7; color: #fff; font-size: 9px;
+  font-weight: 700; padding: 1px 4px; border-radius: 8px;
+  border: 1.5px solid #0e0b1a; white-space: nowrap;
+}
+.mob-chat-hd-info { flex: 1; min-width: 0; }
+.mob-chat-hd-name { font-size: 16px; font-weight: 600; color: #fff; }
+.mob-chat-hd-sub  { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 1px; }
+.mob-chat-hd-act  { display: flex; gap: 8px; }
+.mob-chat-act-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,.1); backdrop-filter: blur(8px);
+  border: none; color: rgba(255,255,255,.8); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+/* Messages area */
+.mob-msgs {
+  flex: 1; overflow-y: auto;
+  padding: 8px 16px 12px;
+  display: flex; flex-direction: column; gap: 2px;
+  position: relative; z-index: 5;
+}
+.mob-msgs::-webkit-scrollbar { display: none; }
+
+/* Inner OS bar */
+.mob-os-bar {
+  position: relative; z-index: 5;
+  margin: 0 16px 8px;
+  background: rgba(14,11,26,.7); backdrop-filter: blur(12px);
+  border: 1px solid rgba(155,109,255,.2);
+  border-radius: 10px; overflow: hidden; flex-shrink: 0;
+}
+.mob-os-bar-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; cursor: pointer;
+}
+.mob-os-bar-label { font-size: 11px; color: rgba(155,109,255,.8); }
+.mob-os-bar-preview {
+  font-size: 11px; color: rgba(255,255,255,.4);
+  flex: 1; margin: 0 10px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mob-os-bar-chev { font-size: 10px; color: rgba(155,109,255,.6); transition: transform .2s; }
+.mob-os-bar-chev.open { transform: rotate(180deg); }
+.mob-os-content {
+  display: none; padding: 0 14px 12px;
+  font-size: 12px; color: rgba(255,255,255,.6);
+  line-height: 1.7; font-style: italic;
+  border-top: 1px solid rgba(155,109,255,.15);
+  padding-top: 10px; max-height: 140px; overflow-y: auto;
+}
+.mob-os-content.open { display: block; }
+
+/* Msg bubbles */
+.mob-msg { display:flex; align-items:flex-start; gap:8px; max-width:85%; animation:mobMsgIn .2s ease; }
+@keyframes mobMsgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.mob-msg.first { margin-top: 10px; }
+.mob-msg.u { align-self: flex-end; flex-direction: row-reverse; }
+.mob-mav {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; background: rgba(28,24,48,.8);
+  border: 1px solid rgba(155,109,255,.3); margin-top: 2px;
+  overflow: hidden;
+}
+.mob-mav img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.mob-msg.grouped .mob-mav { visibility: hidden; }
+.mob-mbody { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.mob-mname { font-size: 10px; color: rgba(255,255,255,.35); padding: 0 4px; margin-bottom: 1px; }
+.mob-mbub {
+  padding: 10px 14px; font-size: 14px; line-height: 1.75;
+  word-break: break-word; white-space: pre-wrap;
+  background: rgba(28,24,48,.85); backdrop-filter: blur(8px);
+  color: rgba(232,228,220,.9);
+  border-radius: 4px 16px 16px 16px;
+  border: 1px solid rgba(155,109,255,.15);
+}
+.mob-msg.u .mob-mbub {
+  background: linear-gradient(135deg, rgba(123,94,167,.9), rgba(80,40,120,.9));
+  border-radius: 16px 4px 16px 16px;
+  border-color: rgba(155,109,255,.3);
+  color: #f0e8ff;
+}
+.mob-msg.u .mob-mbody { align-items: flex-end; }
+.mob-mfoot { display:flex; align-items:center; gap:5px; padding: 2px 4px; }
+.mob-msg.u .mob-mfoot { justify-content: flex-end; }
+.mob-mtime { font-size: 10px; color: rgba(255,255,255,.25); }
+.mob-adv-wrap { display:flex; justify-content:center; margin: 6px 0 4px; }
+.mob-adv-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 16px; border-radius: 20px;
+  background: rgba(123,94,167,.15);
+  border: 1px dashed rgba(155,109,255,.4);
+  color: rgba(155,109,255,.8); font-size: 11px;
+  font-family: 'Noto Sans SC', sans-serif; cursor: pointer;
+  transition: all .2s;
+}
+.mob-adv-btn:active { background: rgba(123,94,167,.3); }
+
+/* Typing indicator */
+.mob-typing-wrap { display:flex; align-items:flex-start; gap:8px; margin-top:10px; }
+.mob-typing-bubble {
+  padding: 10px 16px;
+  background: rgba(28,24,48,.85); backdrop-filter: blur(8px);
+  border-radius: 4px 16px 16px 16px;
+  border: 1px solid rgba(155,109,255,.15);
+}
+.mob-typing { display:flex; align-items:center; gap:4px; }
+.mob-td {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(155,109,255,.6);
+  animation: mobTp 1.2s infinite ease-in-out;
+}
+.mob-td:nth-child(2){animation-delay:.2s}.mob-td:nth-child(3){animation-delay:.4s}
+@keyframes mobTp{0%,60%,100%{transform:scale(1);opacity:.4}30%{transform:scale(1.3);opacity:1}}
+
+/* Input area */
+.mob-inp-area {
+  position: relative; z-index: 10;
+  padding: 8px 12px 28px; flex-shrink: 0;
+  background: rgba(14,11,26,.95); backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(155,109,255,.1);
+}
+.mob-inp-row {
+  display: flex; align-items: flex-end; gap: 8px;
+  background: rgba(28,24,48,.9);
+  border: 1px solid rgba(155,109,255,.2);
+  border-radius: 24px; padding: 8px 8px 8px 16px;
+  transition: border-color .2s;
+}
+.mob-inp-row:focus-within { border-color: rgba(155,109,255,.5); }
+.mob-tinp {
+  flex: 1; background: none; border: none; outline: none;
+  color: #e8e4dc; font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px; resize: none; max-height: 100px;
+  min-height: 22px; line-height: 1.6; padding: 4px 0;
+}
+.mob-tinp::placeholder { color: rgba(255,255,255,.25); }
+.mob-sbtn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #7b5ea7, #9b6dff);
+  border: none; color: #fff; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform .2s; flex-shrink: 0;
+  box-shadow: 0 2px 12px rgba(155,109,255,.4);
+}
+.mob-sbtn:active { transform: scale(0.92); }
+.mob-sbtn:disabled { background: #2a2640; box-shadow: none; color: #5a5568; cursor: not-allowed; }
+
+/* Stream cursor */
+.mob-stream-cursor {
+  display: inline-block; width: 2px; height: 1em;
+  background: rgba(155,109,255,.8); margin-left: 2px;
+  vertical-align: text-bottom; animation: mobBlink .7s infinite;
+}
+@keyframes mobBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Image in chat */
+.mob-msg-img { max-width: 220px; border-radius: 12px; cursor: pointer; display: block; margin-top: 6px; }
+.mob-tool-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 12px; font-size: 10px;
+  background: rgba(155,109,255,.15); border: 1px solid rgba(155,109,255,.3);
+  color: rgba(155,109,255,.9); margin-bottom: 4px;
+}
+
+/* ══ PAGE: DISCOVER ══ */
+#mobDiscover { background: #0e0b1a; }
+.mob-discover-inner {
+  flex: 1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:16px;
+  color: rgba(255,255,255,.3); padding: 40px;
+}
+.mob-discover-icon { font-size: 48px; opacity: .3; }
+
+/* ══ PAGE: PROFILE ══ */
+#mobProfile { background: #0e0b1a; }
+
+/* Mobile toast */
+#mobToast {
+  position: fixed; bottom: 100px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(28,24,48,.95); border: 1px solid rgba(155,109,255,.3);
+  color: #e8e4dc; border-radius: 10px; padding: 8px 18px;
+  font-size: 13px; z-index: 9999; opacity: 0; pointer-events: none;
+  transition: all .3s; white-space: nowrap;
+}
+#mobToast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+#mobToast.ok { border-color: rgba(126,200,154,.5); color: #7ec89a; }
+#mobToast.err { border-color: rgba(200,126,126,.5); color: #c87e7e; }
+
 </style>
 </head>
 </head>
-<body>
+
+<!-- ═══════════════════════════════════════════════════
+     MOBILE IMMERSIVE APP LAYER
+     Hidden on desktop (>768px), shown on mobile
+     All data ops delegate to existing JS functions
+     ═══════════════════════════════════════════════════ -->
+<div id="mobileApp">
+
+  <!-- ── PAGE: Message List ── -->
+  <div class="mob-page on" id="mobMsgList">
+    <div class="mob-topbar">
+      <span class="mob-topbar-title">消息</span>
+      <button class="mob-chat-act-btn" onclick="mobGoDiscover()" style="background:rgba(155,109,255,.15);color:#9b6dff">+ 新对话</button>
+    </div>
+    <div class="mob-search">
+      <span class="mob-search-icon">🔍</span>
+      <input type="text" placeholder="搜索角色..." id="mobSearchInp" oninput="mobFilterChars(this.value)">
+    </div>
+    <div class="mob-charlist" id="mobCharList"></div>
+    <div class="mob-bottomnav">
+      <button class="mob-navbtn" onclick="mobGoDiscover()">
+        <span class="mob-nav-icon">🧭</span>发现
+      </button>
+      <button class="mob-navbtn-msg mob-navbtn on" id="mobNavMsg" onclick="mobGoMsgList()">
+        <span class="mob-nav-icon">💬</span>消息
+        <div class="mob-notif" id="mobNotif" style="display:none"></div>
+      </button>
+      <button class="mob-navbtn" onclick="mobGoProfile()">
+        <span class="mob-nav-icon">👤</span>我的
+      </button>
+    </div>
+  </div>
+
+  <!-- ── PAGE: Immersive Chat ── -->
+  <div class="mob-page" id="mobChat">
+    <!-- Background -->
+    <div class="mob-chat-bg" id="mobChatBg"></div>
+    <div class="mob-chat-bg-overlay"></div>
+
+    <!-- Topbar -->
+    <div class="mob-chat-topbar">
+      <button class="mob-chat-back" onclick="mobGoMsgList()">‹</button>
+      <div class="mob-chat-avwrap">
+        <div class="mob-chat-av" id="mobChatAv"></div>
+        <div class="mob-chat-avcount" id="mobChatCount" style="display:none"></div>
+      </div>
+      <div class="mob-chat-hd-info">
+        <div class="mob-chat-hd-name" id="mobChatName">—</div>
+        <div class="mob-chat-hd-sub" id="mobChatSub">在线</div>
+      </div>
+      <div class="mob-chat-hd-act">
+        <button class="mob-chat-act-btn" onclick="mobToggleOS()" id="mobOsToggleBtn" title="内心OS" style="display:none">💭</button>
+        <button class="mob-chat-act-btn" onclick="mobClearChat()" title="清除">🗑️</button>
+        <button class="mob-chat-act-btn" onclick="gotoPage('cfg')" title="设置">⚙️</button>
+      </div>
+    </div>
+
+    <!-- Inner OS panel -->
+    <div class="mob-os-bar" id="mobOsBar" style="display:none">
+      <div class="mob-os-bar-hd" onclick="mobToggleOsExpand()">
+        <span class="mob-os-bar-label">💭 内心OS</span>
+        <span class="mob-os-bar-preview" id="mobOsPreview">（思考中...）</span>
+        <span class="mob-os-bar-chev" id="mobOsChev">▾</span>
+      </div>
+      <div class="mob-os-content" id="mobOsContent"></div>
+    </div>
+
+    <!-- Messages -->
+    <div class="mob-msgs" id="mobMsgsArea"></div>
+
+    <!-- Input -->
+    <div class="mob-inp-area">
+      <div class="mob-inp-row">
+        <textarea class="mob-tinp" id="mobInp" placeholder="发消息给 Ta…" rows="1"
+          onkeydown="mobOnKey(event)" oninput="mobAutoH(this)" disabled></textarea>
+        <button class="mob-sbtn" id="mobSendBtn" onclick="mobSend()" disabled>➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: Discover ── -->
+  <div class="mob-page" id="mobDiscover">
+    <div class="mob-topbar">
+      <span class="mob-topbar-title">发现</span>
+    </div>
+    <div class="mob-discover-inner">
+      <div class="mob-discover-icon">✨</div>
+      <div style="font-size:15px;color:rgba(255,255,255,.5)">更多角色即将上线</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.3)">你可以在「设置」中创建自定义角色</div>
+      <button onclick="mobGoMsgList();setTimeout(()=>gotoPage('cfg'),100)" 
+        style="margin-top:8px;padding:10px 24px;border-radius:20px;background:rgba(155,109,255,.2);border:1px solid rgba(155,109,255,.4);color:#9b6dff;font-size:14px;cursor:pointer;font-family:inherit">
+        ⚙️ 创建角色
+      </button>
+    </div>
+    <div class="mob-bottomnav">
+      <button class="mob-navbtn on" onclick="mobGoDiscover()"><span class="mob-nav-icon">🧭</span>发现</button>
+      <button class="mob-navbtn-msg mob-navbtn" id="mobNavMsg2" onclick="mobGoMsgList()"><span class="mob-nav-icon">💬</span>消息</button>
+      <button class="mob-navbtn" onclick="mobGoProfile()"><span class="mob-nav-icon">👤</span>我的</button>
+    </div>
+  </div>
+
+  <!-- ── PAGE: Profile ── -->
+  <div class="mob-page" id="mobProfile">
+    <div class="mob-topbar" style="padding-top:60px">
+      <span class="mob-topbar-title">我的</span>
+    </div>
+    <div style="padding:0 20px;flex:1;overflow-y:auto;padding-bottom:90px">
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 0 28px;border-bottom:1px solid rgba(255,255,255,.08)">
+        <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7b5ea7,#9b6dff);display:flex;align-items:center;justify-content:center;font-size:28px">🧑</div>
+        <div>
+          <div style="font-size:18px;font-weight:600;color:#fff">旅行者</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:3px">幻境探索者</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:2px">
+        <div onclick="mobGoApiCfg()" style="display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:20px">🔑</span>
+          <div style="flex:1">
+            <div style="font-size:15px;color:rgba(255,255,255,.8)">API 配置</div>
+            <div id="mobKeyStatusSmall" style="font-size:11px;color:rgba(255,255,255,.35);margin-top:1px">OpenRouter Key</div>
+          </div>
+          <span style="color:rgba(255,255,255,.3)">›</span>
+        </div>
+        <div onclick="mobGoCharMgmt()" style="display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:20px">🎭</span>
+          <div style="flex:1">
+            <div style="font-size:15px;color:rgba(255,255,255,.8)">角色管理</div>
+            <div id="mobCharCountSmall" style="font-size:11px;color:rgba(255,255,255,.35);margin-top:1px">管理角色</div>
+          </div>
+          <span style="color:rgba(255,255,255,.3)">›</span>
+        </div>
+        <div onclick="mobGoApiCfg()" style="display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:20px">⚙️</span>
+          <div style="flex:1">
+            <div style="font-size:15px;color:rgba(255,255,255,.8)">高级配置</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:1px">模型、记忆、Agent等</div>
+          </div>
+          <span style="color:rgba(255,255,255,.3)">›</span>
+        </div>
+      </div>
+      <div style="margin-top:32px;text-align:center;font-size:11px;color:rgba(255,255,255,.2)">幻境 · AI伴侣 · 移动版</div>
+    </div>
+    <div class="mob-bottomnav">
+      <button class="mob-navbtn" onclick="mobGoDiscover()"><span class="mob-nav-icon">🧭</span>发现</button>
+      <button class="mob-navbtn-msg mob-navbtn" onclick="mobGoMsgList()"><span class="mob-nav-icon">💬</span>消息</button>
+      <button class="mob-navbtn on" onclick="mobGoProfile()"><span class="mob-nav-icon">👤</span>我的</button>
+    </div>
+  </div>
+
+
+  <!-- ── PAGE: Mobile API Config ── -->
+  <div class="mob-page" id="mobApiCfg">
+    <div class="mob-topbar">
+      <button class="mob-chat-back" onclick="mobGoProfile()" style="font-size:22px">‹</button>
+      <span class="mob-topbar-title" style="font-size:20px">API 配置</span>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:0 20px 40px">
+
+      <!-- Key notice -->
+      <div style="background:rgba(123,94,167,.12);border:1px solid rgba(155,109,255,.25);border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:12px;line-height:1.8;color:rgba(255,255,255,.6)">
+        <strong style="color:#9b6dff">⚠️ 这里填 OpenRouter 的 Key</strong><br>
+        格式：<code style="background:rgba(0,0,0,.3);padding:1px 6px;border-radius:4px;color:#c8c07e">sk-or-v1-xxxxxxxx</code><br>
+        获取：<span style="color:#9b6dff">openrouter.ai/keys</span>（免费注册）<br>
+        ElevenLabs Key（<code style="background:rgba(0,0,0,.3);padding:1px 6px;border-radius:4px">sk_xxx</code>）在语音合成里填
+      </div>
+
+      <!-- API Key -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:8px;letter-spacing:.5px">OPENROUTER API KEY</div>
+        <div style="display:flex;gap:8px">
+          <input type="password" id="mobKeyEl" placeholder="sk-or-v1-…"
+            style="flex:1;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.25);border-radius:12px;padding:12px 16px;color:#e8e4dc;font-size:13px;outline:none;font-family:'Space Mono',monospace;letter-spacing:2px">
+          <button onclick="mobToggleKeyVis()" style="width:44px;height:44px;border-radius:12px;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.2);color:rgba(255,255,255,.5);font-size:16px;cursor:pointer;flex-shrink:0">👁</button>
+        </div>
+        <div id="mobKeyStatus" style="font-size:11px;color:rgba(126,200,154,.8);margin-top:6px;padding-left:4px"></div>
+      </div>
+
+      <!-- Model -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:8px;letter-spacing:.5px">对话模型</div>
+        <input type="text" id="mobModelEl" placeholder="stepfun/step-3.5-flash:free"
+          style="width:100%;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.25);border-radius:12px;padding:12px 16px;color:#e8e4dc;font-size:13px;outline:none;font-family:inherit;box-sizing:border-box">
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;padding-left:4px;line-height:1.7">
+          💭 内心OS推荐：<span style="color:rgba(155,109,255,.7)">deepseek/deepseek-r1</span><br>
+          免费：<span style="color:rgba(126,200,154,.7)">stepfun/step-3.5-flash:free</span>
+        </div>
+      </div>
+
+      <!-- ReAct toggle -->
+      <div style="background:rgba(28,24,48,.7);border:1px solid rgba(155,109,255,.2);border-radius:12px;padding:14px 16px;margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-size:14px;color:#fff;font-weight:500">💭 内心OS / ReAct</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px">让角色先思考再回复</div>
+          </div>
+          <label style="position:relative;width:44px;height:24px;cursor:pointer">
+            <input type="checkbox" id="mobReactEl" onchange="mobSaveReact()" style="opacity:0;width:0;height:0">
+            <span id="mobReactSlider" style="position:absolute;inset:0;background:rgba(255,255,255,.15);border-radius:12px;transition:.3s;cursor:pointer"></span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:13px;color:rgba(255,255,255,.7)">include_reasoning</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:1px">R1等推理模型必须开启</div>
+          </div>
+          <label style="position:relative;width:44px;height:24px;cursor:pointer">
+            <input type="checkbox" id="mobInclReasonEl" onchange="mobSaveReact()" style="opacity:0;width:0;height:0">
+            <span id="mobInclSlider" style="position:absolute;inset:0;background:rgba(255,255,255,.15);border-radius:12px;transition:.3s;cursor:pointer"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <button onclick="mobSaveApiCfg()" style="flex:1;padding:14px;border-radius:14px;background:linear-gradient(135deg,#7b5ea7,#9b6dff);border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">
+          💾 保存配置
+        </button>
+      </div>
+      <button onclick="mobTestConn()" style="width:100%;padding:12px;border-radius:14px;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.3);color:rgba(155,109,255,.9);font-size:14px;cursor:pointer;font-family:inherit">
+        🔗 测试连接
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ── PAGE: Mobile Char Management ── -->
+  <div class="mob-page" id="mobCharMgmt">
+    <div class="mob-topbar">
+      <button class="mob-chat-back" onclick="mobGoProfile()" style="font-size:22px">‹</button>
+      <span class="mob-topbar-title" style="font-size:20px">角色管理</span>
+      <button onclick="mobOpenCharEdit(null)" style="background:rgba(155,109,255,.2);border:1px solid rgba(155,109,255,.4);border-radius:10px;padding:6px 14px;color:#9b6dff;font-size:13px;cursor:pointer;margin-left:auto">+ 新建</button>
+    </div>
+    <div id="mobCharMgmtList" style="flex:1;overflow-y:auto;padding:0 16px 40px"></div>
+  </div>
+
+  <!-- ── SHEET: Char Edit (slides up) ── -->
+  <div id="mobCharEditSheet" style="position:fixed;inset:0;z-index:2000;pointer-events:none;display:none">
+    <div id="mobCharEditBg" onclick="mobCloseCharEdit()" style="position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;transition:opacity .3s"></div>
+    <div id="mobCharEditPanel" style="position:absolute;bottom:0;left:0;right:0;background:#12101e;border-radius:20px 20px 0 0;padding:0 0 40px;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,1,.58,1)">
+      <div style="width:40px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:12px auto 0"></div>
+      <div style="padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between">
+        <div id="mobCharEditTitle" style="font-size:18px;font-weight:600;color:#fff">创建角色</div>
+        <button onclick="mobCloseCharEdit()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;padding:0">×</button>
+      </div>
+      <div style="padding:16px 20px;display:flex;flex-direction:column;gap:14px">
+        <!-- Emoji + Name row -->
+        <div style="display:flex;gap:10px;align-items:flex-end">
+          <div style="flex-shrink:0">
+            <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px">Emoji</div>
+            <input type="text" id="mobCEmoji" maxlength="2" placeholder="🤖"
+              style="width:56px;height:48px;text-align:center;font-size:24px;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.25);border-radius:12px;color:#e8e4dc;outline:none">
+          </div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px">名称 *</div>
+            <input type="text" id="mobCName" placeholder="角色名称"
+              style="width:100%;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.25);border-radius:12px;padding:12px 14px;color:#e8e4dc;font-size:14px;outline:none;box-sizing:border-box;font-family:inherit">
+          </div>
+        </div>
+        <!-- Desc -->
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px">简介</div>
+          <input type="text" id="mobCDesc" placeholder="一句话介绍角色"
+            style="width:100%;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.25);border-radius:12px;padding:12px 14px;color:#e8e4dc;font-size:14px;outline:none;box-sizing:border-box;font-family:inherit">
+        </div>
+        <!-- System prompt -->
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px">角色设定 / System Prompt</div>
+          <textarea id="mobCSys" placeholder="你是一个温柔体贴的AI伴侣…" rows="5"
+            style="width:100%;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.25);border-radius:12px;padding:12px 14px;color:#e8e4dc;font-size:13px;outline:none;box-sizing:border-box;font-family:inherit;resize:vertical;line-height:1.6"></textarea>
+        </div>
+        <!-- Greeting -->
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px">开场白</div>
+          <textarea id="mobCGreet" placeholder="你好～我在这里 😊" rows="3"
+            style="width:100%;background:rgba(28,24,48,.9);border:1px solid rgba(155,109,255,.25);border-radius:12px;padding:12px 14px;color:#e8e4dc;font-size:13px;outline:none;box-sizing:border-box;font-family:inherit;resize:vertical;line-height:1.6"></textarea>
+        </div>
+        <!-- Save button -->
+        <button onclick="mobSaveChar()" style="width:100%;padding:15px;border-radius:14px;background:linear-gradient(135deg,#7b5ea7,#9b6dff);border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px">
+          💾 保存角色
+        </button>
+        <button id="mobDeleteCharBtn" onclick="mobDeleteChar()" style="width:100%;padding:13px;border-radius:14px;background:rgba(200,126,126,.1);border:1px solid rgba(200,126,126,.3);color:rgba(200,126,126,.9);font-size:14px;cursor:pointer;font-family:inherit;display:none">
+          🗑️ 删除此角色
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile toast -->
+  <div id="mobToast"></div>
+</div>
 
 <nav class="nav">
   <div class="logo">幻境 · AI伴侣</div>
@@ -3280,7 +3925,540 @@ function sdebugClose() {
 }
 
 
+// ═══════════════════════════════════════════════════════
+// MOBILE IMMERSIVE LAYER — JS
+// Delegates all data to existing functions
+// ═══════════════════════════════════════════════════════
+
+// ── Navigation ──
+function mobShowPage(id) {
+  document.querySelectorAll('.mob-page').forEach(p => p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function mobGoMsgList() { mobShowPage('mobMsgList'); mobRenderCharList(); }
+function mobGoChat(charId) {
+  selectChar(charId);       // reuse existing function — sets C.activeId, loads conv
+  mobOpenChat(charId);
+}
+function mobGoDiscover() { mobShowPage('mobDiscover'); }
+function mobGoProfile()  { mobShowPage('mobProfile'); }
+
+// ── Open chat page for a character ──
+function mobOpenChat(charId) {
+  const char = getChar(charId); if (!char) return;
+  mobShowPage('mobChat');
+
+  // Header
+  const avEl = document.getElementById('mobChatAv');
+  avEl.innerHTML = char.emoji;
+
+  document.getElementById('mobChatName').textContent = char.name;
+  document.getElementById('mobChatSub').textContent  = char.desc || '在线';
+
+  // Background (future: char.cover)
+  const bg = document.getElementById('mobChatBg');
+  bg.style.backgroundImage = '';
+
+  // Enable input
+  const inp  = document.getElementById('mobInp');
+  const sBtn = document.getElementById('mobSendBtn');
+  inp.disabled  = false;
+  sBtn.disabled = false;
+  inp.placeholder = `发消息给 ${char.name}…`;
+
+  mobRenderMsgs();
+}
+
+// ── Render character list ──
+function mobRenderCharList(filter) {
+  const list = document.getElementById('mobCharList');
+  if (!list) return;
+  const chars = filter
+    ? C.chars.filter(ch => ch.name.includes(filter) || ch.desc.includes(filter))
+    : C.chars;
+
+  list.innerHTML = chars.map(ch => {
+    const conv    = (C.convs[ch.id] || []).filter(m => !m.hidden);
+    const last    = conv.slice(-1)[0];
+    const preview = last
+      ? (last.role === 'user' ? '你：' : '') + (last.content || '[图片]').replace(/\n/g,' ').slice(0,32)
+      : ch.desc;
+    const ts  = last ? ts2t(last.ts) : '';
+    const unread = (C.activeId !== ch.id && last && last.role === 'assistant') ? 1 : 0;
+
+    return `<div class="mob-ci" onclick="mobGoChat('${ch.id}')">
+      <div class="mob-ci-av">
+        ${ch.emoji}
+        ${unread ? '<div class="mob-ci-dot"></div>' : ''}
+      </div>
+      <div class="mob-ci-body">
+        <div class="mob-ci-top">
+          <span class="mob-ci-name">${esc(ch.name)}</span>
+          <span class="mob-ci-time">${ts}</span>
+        </div>
+        <div class="mob-ci-preview">${esc(preview)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function mobFilterChars(v) { mobRenderCharList(v.trim()); }
+
+// ── Render messages (mobile) ──
+function mobRenderMsgs() {
+  const area = document.getElementById('mobMsgsArea');
+  if (!area) return;
+  const char = activeChar();
+  const msgs  = (C.convs[C.activeId] || []).filter(m => !m.hidden);
+
+  if (!char || !msgs.length) {
+    area.innerHTML = `<div style="flex:1;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.25);font-size:13px;padding:40px;text-align:center">
+      ${char ? `<div><div style="font-size:40px;margin-bottom:12px">${char.emoji}</div>${esc(char.desc)}</div>` : '选择一个角色开始对话'}
+    </div>`;
+    return;
+  }
+
+  let lastAsstIdx = -1;
+  for (let i = msgs.length-1; i >= 0; i--) {
+    if (msgs[i].role === 'assistant') { lastAsstIdx = i; break; }
+  }
+
+  // Show OS toggle if last message has think
+  const lastMsg = msgs[lastAsstIdx];
+  const hasThink = lastMsg && lastMsg.think;
+  document.getElementById('mobOsToggleBtn').style.display = hasThink ? '' : 'none';
+  if (hasThink) mobUpdateOsBar(lastMsg.think);
+
+  area.innerHTML = msgs.map((m, idx) => {
+    const isUser = m.role === 'user';
+    const av     = isUser ? '🧑' : char.emoji;
+    const time   = ts2t(m.ts);
+    const prev   = msgs.slice(0,idx).reverse().find(x => !x.hidden);
+    const isGroup = prev && prev.role === m.role && !m.toolCall && !m.imgUrl;
+    const isFirst = !isGroup;
+
+    const toolBadge = m.toolCall ? `<div class="mob-tool-badge">🎨 ${esc(m.toolCall)}</div>` : '';
+    const imgBlock  = m.imgUrl
+      ? `<img class="mob-msg-img" src="${esc(m.imgUrl)}" onclick="openLightbox('${esc(m.imgUrl)}')" loading="lazy">`
+      : '';
+    const bubbleText = m.content
+      ? `<div class="mob-mbub">${renderMd(m.content)}</div>` : '';
+
+    const advBtn = (!isUser && idx === lastAsstIdx)
+      ? `<div class="mob-adv-wrap"><button class="mob-adv-btn" onclick="mobAdvance()">▶ 继续推进</button></div>` : '';
+
+    const avHtml = isFirst
+      ? `<div class="mob-mav">${av}</div>`
+      : `<div class="mob-mav" style="visibility:hidden"></div>`;
+
+    return `<div class="mob-msg${isUser?' u':''}${isGroup?' grouped':''}${isFirst?' first':''}">
+      ${isUser ? '' : avHtml}
+      <div class="mob-mbody">
+        ${isFirst && !isUser ? `<div class="mob-mname">${esc(char.name)}</div>` : ''}
+        ${toolBadge}${bubbleText}${imgBlock}
+        <div class="mob-mfoot"><span class="mob-mtime">${time}</span></div>
+        ${advBtn}
+      </div>
+      ${isUser ? avHtml : ''}
+    </div>`;
+  }).join('');
+
+  area.scrollTop = area.scrollHeight;
+}
+
+// ── Inner OS ──
+function mobUpdateOsBar(think) {
+  if (!think) return;
+  document.getElementById('mobOsBar').style.display = '';
+  document.getElementById('mobOsPreview').textContent = think.slice(0, 40) + (think.length > 40 ? '…' : '');
+  document.getElementById('mobOsContent').textContent = think;
+}
+function mobToggleOS() {
+  const bar = document.getElementById('mobOsBar');
+  bar.style.display = bar.style.display === 'none' ? '' : 'none';
+}
+function mobToggleOsExpand() {
+  const content = document.getElementById('mobOsContent');
+  const chev    = document.getElementById('mobOsChev');
+  const open = content.classList.toggle('open');
+  chev.classList.toggle('open', open);
+}
+
+// ── Send message (mobile) ──
+async function mobSend() {
+  const inp  = document.getElementById('mobInp');
+  const sBtn = document.getElementById('mobSendBtn');
+  const text = inp.value.trim();
+  if (!text || !C.activeId) return;
+  if (!C.orKey) { mobToast('请先在设置中填入 API Key', 'err'); return; }
+
+  inp.value = ''; inp.style.height = 'auto';
+  sBtn.disabled = true; inp.disabled = true;
+
+  // Push user message and render immediately
+  if (!C.convs[C.activeId]) C.convs[C.activeId] = [];
+  C.convs[C.activeId].push({ role:'user', content:text, ts:Date.now() });
+  mobRenderMsgs();
+  mobShowTyping();
+
+  // Reuse streaming path — wire to mobile render
+  const cid  = C.activeId;
+  const char = getChar(cid);
+  const mp   = C.mp;
+  const histN = (C.shortMem || 10) * 2;
+  const model = C.orModel || 'stepfun/step-3.5-flash:free';
+  const key   = C.orKey || '';
+  if (!key) { mobHideTyping(); sBtn.disabled=false; inp.disabled=false; return; }
+
+  // Build system + messages (same logic as desktop streaming)
+  const sysParts = [];
+  if (C.globalPrompt.trim())  sysParts.push(C.globalPrompt.trim());
+  if (char.system.trim())     sysParts.push(char.system.trim());
+  const mem = C.longMem[cid] || '';
+  if (mem.trim())             sysParts.push('【长期记忆】\n' + mem.trim());
+  const systemPrompt = sysParts.join('\n\n');
+
+  const allConv = (C.convs[cid] || []).filter(m => !m.hidden).slice(0, -1);
+  const hist    = allConv.slice(-histN);
+  const messages = [];
+  if (systemPrompt) messages.push({ role:'system', content:systemPrompt });
+  (char.examples || []).forEach(ex => messages.push({ role:ex.role, content:ex.content }));
+  hist.forEach(m => {
+    if (m.role==='assistant' && !m.content && m.imgUrl) return;
+    messages.push({ role:m.role, content:m.content||'' });
+  });
+  if (C.react?.enabled) messages.push({ role:'system', content:(C.react.prompt?.trim())||DEF_REACT_PROMPT });
+  messages.push({ role:'user', content:text });
+
+  const reqBody = {
+    model, messages,
+    max_tokens: mp.maxTokens || 4096,
+    temperature: mp.temperature ?? 0.8,
+    top_p: mp.topP ?? 0.9,
+    frequency_penalty: mp.frequencyPenalty ?? 0,
+    ...(C.react?.includeReasoning ? { include_reasoning: true } : {})
+  };
+
+  // Streaming bubble
+  const area = document.getElementById('mobMsgsArea');
+  const typingEl = document.getElementById('mobTypingEl');
+  if (typingEl) typingEl.remove();
+
+  const streamEl = document.createElement('div');
+  streamEl.id = 'mobStreamEl';
+  streamEl.className = 'mob-msg first';
+  streamEl.innerHTML = `
+    <div class="mob-mav">${char.emoji}</div>
+    <div class="mob-mbody">
+      <div class="mob-mname">${esc(char.name)}</div>
+      <div class="mob-mbub" id="mob-stream-bubble">
+        <span id="mob-stream-reply"></span><span class="mob-stream-cursor"></span>
+      </div>
+    </div>`;
+  area.appendChild(streamEl);
+  area.scrollTop = area.scrollHeight;
+
+  // OS streaming
+  let thinkBuf = '';
+
+  await orStream(reqBody, key, {
+    onThink(chunk) {
+      thinkBuf += chunk;
+      document.getElementById('mobOsBar').style.display = '';
+      document.getElementById('mobOsToggleBtn').style.display = '';
+      document.getElementById('mobOsPreview').textContent = thinkBuf.slice(0,40) + (thinkBuf.length>40?'…':'');
+      const oc = document.getElementById('mobOsContent');
+      oc.textContent = thinkBuf;
+      oc.classList.add('open');
+      document.getElementById('mobOsChev').classList.add('open');
+    },
+    onReply(chunk) {
+      const el = document.getElementById('mob-stream-reply');
+      if (el) { el.innerHTML = renderMd((el.dataset.raw || '') + chunk); el.dataset.raw = (el.dataset.raw||'') + chunk; }
+      area.scrollTop = area.scrollHeight;
+    },
+    onDone(think, reply, usage) {
+      streamEl.remove();
+      const tk = usage?.completion_tokens || estTk(reply);
+      C.convs[cid].push({ role:'assistant', content:reply, think, ts:Date.now(), tokens:tk });
+      persist();
+      mobRenderMsgs();
+      mobRenderCharList();
+      sBtn.disabled = false; inp.disabled = false;
+      document.getElementById('mobInp').focus();
+      _afterSend(cid);
+    },
+    onError(msg) {
+      streamEl.remove();
+      C.convs[cid].push({ role:'assistant', content:'⚠️ ' + msg, ts:Date.now() });
+      persist(); mobRenderMsgs();
+      sBtn.disabled = false; inp.disabled = false;
+      mobToast(msg.slice(0,60), 'err');
+    }
+  });
+}
+
+function mobOnKey(e) { if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); mobSend(); } }
+function mobAutoH(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,100)+'px'; }
+
+// ── Typing indicator ──
+function mobShowTyping() {
+  const area = document.getElementById('mobMsgsArea');
+  const char = activeChar();
+  const el = document.createElement('div');
+  el.id = 'mobTypingEl'; el.className='mob-typing-wrap';
+  el.innerHTML = `<div class="mob-mav">${char?char.emoji:'🤖'}</div>
+    <div class="mob-typing-bubble"><div class="mob-typing">
+      <div class="mob-td"></div><div class="mob-td"></div><div class="mob-td"></div>
+    </div></div>`;
+  area.appendChild(el); area.scrollTop=area.scrollHeight;
+}
+function mobHideTyping() { document.getElementById('mobTypingEl')?.remove(); }
+
+// ── Advance scene ──
+function mobAdvance() {
+  // Reuse desktop advanceScene but re-render mobile after
+  advanceScene().then ? null : null;
+  // Hook: after advanceScene updates convs, re-render mobile
+  const orig = advanceScene;
+  advanceScene();
+}
+
+// ── Clear chat ──
+function mobClearChat() {
+  if (!C.activeId || !confirm('清除当前对话？')) return;
+  C.convs[C.activeId] = [];
+  const char = activeChar();
+  if (char?.greeting) C.convs[C.activeId].push({role:'assistant',content:char.greeting,ts:Date.now()});
+  persist(); mobRenderMsgs(); mobRenderCharList();
+}
+
+// ── Mobile toast ──
+let _mobToastTimer = null;
+function mobToast(msg, type) {
+  const el = document.getElementById('mobToast');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'on' + (type ? ' ' + type : '');
+  clearTimeout(_mobToastTimer);
+  _mobToastTimer = setTimeout(() => el.className = '', 2800);
+}
+
+// ── Init mobile layer ──
+function initMobile() {
+  mobRenderCharList();
+  // Update profile key status
+  const sm = document.getElementById('mobKeyStatusSmall');
+  if (sm) sm.textContent = C.orKey ? '…' + C.orKey.slice(-6) : 'OpenRouter Key';
+  const ct = document.getElementById('mobCharCountSmall');
+  if (ct) ct.textContent = C.chars.length + ' 个角色';
+  // Intercept renderSidebar / renderMsgs to also update mobile
+  const _origRenderSidebar = renderSidebar;
+  renderSidebar = function() { _origRenderSidebar.call(this,...arguments); mobRenderCharList(); };
+  const _origRenderMsgs = renderMsgs;
+  renderMsgs = function() { _origRenderMsgs.call(this,...arguments); if(C.activeId) mobRenderMsgs(); };
+}
+
+
+// ═══════════════════════════════════════════════════
+// MOBILE API CONFIG & CHAR MANAGEMENT JS
+// ═══════════════════════════════════════════════════
+
+// ── Navigation ──
+function mobGoApiCfg() {
+  mobShowPage('mobApiCfg');
+  mobSyncApiForm();
+}
+function mobGoCharMgmt() {
+  mobShowPage('mobCharMgmt');
+  mobRenderCharMgmtList();
+}
+
+// ── API Config: sync form with state ──
+function mobSyncApiForm() {
+  const keyEl = document.getElementById('mobKeyEl');
+  if (keyEl) keyEl.value = C.orKey ? '••••••••••••••••' + C.orKey.slice(-6) : '';
+  const mdlEl = document.getElementById('mobModelEl');
+  if (mdlEl) mdlEl.value = C.orModel || '';
+  // ReAct toggles
+  const reactEl = document.getElementById('mobReactEl');
+  if (reactEl) {
+    reactEl.checked = !!C.react?.enabled;
+    document.getElementById('mobReactSlider').style.background =
+      C.react?.enabled ? '#9b6dff' : 'rgba(255,255,255,.15)';
+  }
+  const inclEl = document.getElementById('mobInclReasonEl');
+  if (inclEl) {
+    inclEl.checked = C.react?.includeReasoning !== false;
+    document.getElementById('mobInclSlider').style.background =
+      C.react?.includeReasoning !== false ? '#9b6dff' : 'rgba(255,255,255,.15)';
+  }
+  // Key status
+  const ks = document.getElementById('mobKeyStatus');
+  if (ks) ks.textContent = C.orKey ? '✅ Key 已配置（…' + C.orKey.slice(-6) + '）' : '';
+}
+
+function mobToggleKeyVis() {
+  const el = document.getElementById('mobKeyEl');
+  if (el.type === 'password') { el.type = 'text'; el.value = C.orKey || ''; }
+  else { el.type = 'password'; el.value = C.orKey ? '••••••••••••••••' + C.orKey.slice(-6) : ''; }
+}
+
+function mobSaveApiCfg() {
+  // Save key
+  const keyEl = document.getElementById('mobKeyEl');
+  keyEl.type = 'text';
+  const rawKey = keyEl.value.trim();
+  keyEl.type = 'password';
+  if (rawKey && !rawKey.startsWith('•')) C.orKey = rawKey;
+  keyEl.value = C.orKey ? '••••••••••••••••' + C.orKey.slice(-6) : '';
+
+  // Save model
+  const mdl = document.getElementById('mobModelEl').value.trim();
+  if (mdl) {
+    C.orModel = mdl;
+    const chip = document.getElementById('modelChip');
+    if (chip) chip.textContent = mdl;
+  }
+
+  // ReAct
+  mobSaveReact();
+
+  persist();
+  const ks = document.getElementById('mobKeyStatus');
+  if (ks) ks.textContent = C.orKey ? '✅ Key 已保存（…' + C.orKey.slice(-6) + '）' : '未填入';
+  const sm = document.getElementById('mobKeyStatusSmall');
+  if (sm) sm.textContent = C.orKey ? '…' + C.orKey.slice(-6) : 'OpenRouter Key';
+  // Sync desktop form too
+  const desktopKeyEl = document.getElementById('orKeyEl');
+  if (desktopKeyEl) desktopKeyEl.value = C.orKey ? '••••••••••••••••' + C.orKey.slice(-6) : '';
+  const desktopMdlEl = document.getElementById('orModelEl');
+  if (desktopMdlEl) desktopMdlEl.value = C.orModel;
+  mobToast('配置已保存 ✅', 'ok');
+}
+
+function mobSaveReact() {
+  const reactEl = document.getElementById('mobReactEl');
+  const inclEl  = document.getElementById('mobInclReasonEl');
+  if (reactEl) {
+    C.react.enabled = reactEl.checked;
+    document.getElementById('mobReactSlider').style.background =
+      reactEl.checked ? '#9b6dff' : 'rgba(255,255,255,.15)';
+  }
+  if (inclEl) {
+    C.react.includeReasoning = inclEl.checked;
+    document.getElementById('mobInclSlider').style.background =
+      inclEl.checked ? '#9b6dff' : 'rgba(255,255,255,.15)';
+  }
+  persist();
+}
+
+async function mobTestConn() {
+  if (!C.orKey) { mobToast('请先填入并保存 API Key', 'err'); return; }
+  mobToast('测试连接中…');
+  try {
+    await orFetch({ model:C.orModel, max_tokens:5, messages:[{role:'user',content:'hi'}] }, C.orKey);
+    mobToast('✅ 连接成功！', 'ok');
+  } catch(e) { mobToast('❌ ' + e.message.slice(0,50), 'err'); }
+}
+
+// ── Char Management ──
+let _mobEditingCharId = null;
+
+function mobRenderCharMgmtList() {
+  const list = document.getElementById('mobCharMgmtList');
+  if (!list) return;
+  // Update count badge
+  const ct = document.getElementById('mobCharCountSmall');
+  if (ct) ct.textContent = C.chars.length + ' 个角色';
+
+  list.innerHTML = C.chars.map(ch => `
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06)" onclick="mobOpenCharEdit('${ch.id}')">
+      <div style="width:50px;height:50px;border-radius:50%;background:rgba(28,24,48,.9);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:1px solid rgba(155,109,255,.2)">${ch.emoji}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:15px;font-weight:500;color:#fff">${esc(ch.name)}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(ch.desc)}</div>
+      </div>
+      <div style="color:rgba(155,109,255,.6);font-size:20px;padding:0 4px">›</div>
+    </div>`).join('');
+
+  if (!C.chars.length) {
+    list.innerHTML = '<div style="text-align:center;padding:60px 20px;color:rgba(255,255,255,.3)"><div style="font-size:40px;margin-bottom:12px">🎭</div><div>还没有角色，点右上角新建</div></div>';
+  }
+}
+
+function mobOpenCharEdit(charId) {
+  _mobEditingCharId = charId;
+  const ch = charId ? getChar(charId) : null;
+
+  document.getElementById('mobCharEditTitle').textContent = ch ? '编辑角色' : '创建角色';
+  document.getElementById('mobCEmoji').value   = ch ? ch.emoji   : '';
+  document.getElementById('mobCName').value    = ch ? ch.name    : '';
+  document.getElementById('mobCDesc').value    = ch ? ch.desc    : '';
+  document.getElementById('mobCSys').value     = ch ? ch.system  : '';
+  document.getElementById('mobCGreet').value   = ch ? (ch.greeting||'') : '';
+  document.getElementById('mobDeleteCharBtn').style.display = ch ? '' : 'none';
+
+  // Show sheet
+  const sheet = document.getElementById('mobCharEditSheet');
+  const panel = document.getElementById('mobCharEditPanel');
+  const bg    = document.getElementById('mobCharEditBg');
+  sheet.style.display = 'block';
+  sheet.style.pointerEvents = 'all';
+  requestAnimationFrame(() => {
+    panel.style.transform = 'translateY(0)';
+    bg.style.opacity = '1';
+  });
+}
+
+function mobCloseCharEdit() {
+  const panel = document.getElementById('mobCharEditPanel');
+  const bg    = document.getElementById('mobCharEditBg');
+  const sheet = document.getElementById('mobCharEditSheet');
+  panel.style.transform = 'translateY(100%)';
+  bg.style.opacity = '0';
+  setTimeout(() => { sheet.style.display = 'none'; sheet.style.pointerEvents = 'none'; }, 350);
+}
+
+function mobSaveChar() {
+  const emoji   = document.getElementById('mobCEmoji').value.trim() || '🤖';
+  const name    = document.getElementById('mobCName').value.trim();
+  const desc    = document.getElementById('mobCDesc').value.trim();
+  const system  = document.getElementById('mobCSys').value.trim();
+  const greeting = document.getElementById('mobCGreet').value.trim();
+
+  if (!name) { mobToast('请输入角色名称', 'err'); return; }
+
+  if (_mobEditingCharId) {
+    const idx = C.chars.findIndex(c => c.id === _mobEditingCharId);
+    if (idx !== -1) C.chars[idx] = { ...C.chars[idx], emoji, name, desc, system, greeting };
+  } else {
+    C.chars.push({ id:'c'+Date.now(), emoji, name, desc, system, greeting, examples:[] });
+  }
+  persist();
+  renderSidebar();       // update desktop sidebar
+  mobRenderCharList();   // update mobile msg list
+  mobRenderCharMgmtList();
+  mobCloseCharEdit();
+  mobToast(_mobEditingCharId ? '角色已更新 ✅' : '角色已创建 🎉', 'ok');
+}
+
+function mobDeleteChar() {
+  if (!_mobEditingCharId) return;
+  if (!confirm('确定删除此角色？')) return;
+  C.chars = C.chars.filter(c => c.id !== _mobEditingCharId);
+  if (C.activeId === _mobEditingCharId) C.activeId = null;
+  persist();
+  renderSidebar();
+  mobRenderCharList();
+  mobRenderCharMgmtList();
+  mobCloseCharEdit();
+  mobToast('已删除', '');
+}
+
+
 init();
+initMobile();
 
 </script>
 </body>
